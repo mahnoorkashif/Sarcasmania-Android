@@ -18,7 +18,7 @@
             <com.huxq17.swipecardsview.SwipeCardsView
                 android:id="@+id/swipeCardsView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
@@ -43,7 +43,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentEnd="true"
@@ -53,50 +53,77 @@
                 android:layout_marginLeft="0dp"
                 android:layout_marginEnd="0dp"
                 android:layout_marginRight="0dp"
-                android:layout_marginBottom="100dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_marginBottom="50dp"
+                android:orientation="vertical"
+                android:weightSum="2" >
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/dislike"
-                    android:layout_width="60dp"
-                    android:layout_height="match_parent"
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sarcasm"
+                    android:textStyle="bold"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:textColor="@color/statusBarColor" />
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:paddingLeft="20dp" />
+                    android:stepSize="1"
+                    />
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/like"
-                    android:layout_width="60dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:paddingRight="20dp" />
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:gravity="center"
+                    android:textColor="@color/statusBarColor"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="gone"
+                    />
 
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Humor"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textColor="@color/statusBarColor"
+                    />
 
+                <SeekBar
+                    android:id="@+id/seekBar2"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="2"
+                    android:progress="0"
+                    android:layout_marginBottom="15dp"/>
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Insult"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textColor="@color/statusBarColor"/>
+
+                <SeekBar
+                    android:id="@+id/seekBar3"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="2"
+                    android:progress="0" />
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/skipCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="148dp"
-                android:layout_marginLeft="148dp"
-                android:layout_marginTop="36dp"
-                android:layout_marginEnd="145dp"
-                android:layout_marginRight="145dp"
-                android:layout_marginBottom="43dp"
-                android:layout_weight="1"
-                android:text="Skip"
-                android:textAlignment="center"
-                android:textColor="@color/hintcolor"
-                android:textSize="25sp"
-                android:textStyle="bold" />
 
         </RelativeLayout>
 

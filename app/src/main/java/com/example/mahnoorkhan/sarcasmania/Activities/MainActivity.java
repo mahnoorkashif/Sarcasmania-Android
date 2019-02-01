@@ -72,9 +72,6 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
     private SwipeCardsView swipeCardsView;
     private List<Post> modelList;
     private ArrayList<Post> modelList2;
-    private ImageView like;
-    private ImageView dislike;
-    private TextView skipCard;
     Random rand;
     Boolean check;
     String usernameFromLogin;
@@ -83,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
     DatabaseReference databaseReference;
     GestureDetector gestureDetector;
     View selected;
+    RatingBar ratingBar;
+    TextView sarcasmScale;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,11 +214,6 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
 
     @Override
     public void setNewsFeed() {
-        like = (ImageView) findViewById(R.id.like);
-        dislike = (ImageView) findViewById(R.id.dislike);
-        Glide.with(getApplicationContext()).load(R.mipmap.insult).into(dislike);
-        Glide.with(getApplicationContext()).load(R.mipmap.haha).into(like);
-
         //------------------------------- get swipe cards view----------------------------------------
         swipeCardsView = (SwipeCardsView)findViewById(R.id.swipeCardsView);
         swipeCardsView.retainLastCard(false);
@@ -255,177 +249,58 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
         }
 
         //---------------------------------like dislike skipCard buttons and temp data list--------------------------------------
-        skipCard = (TextView) findViewById(R.id.skipCard);
         rand = new Random();
-        skipCard.setPaintFlags(skipCard.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         final List<Post> temp = new ArrayList<Post>();
         temp.addAll(modelList);
         final int count = temp.size()-1;
 
-    /*    //---------------------------------on swipe listeners--------------------------------------
+        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        sarcasmScale = (TextView) findViewById(R.id.textView5);
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                sarcasmScale.setVisibility(View.VISIBLE);
+                sarcasmScale.setText(String.valueOf(rating));
+                switch ((int) ratingBar.getRating()) {
+                    case 1:
+                        sarcasmScale.setText("Very bad Sarcasm");
+                        break;
+                    case 2:
+                        sarcasmScale.setText("So so hai");
+                        break;
+                    case 3:
+                        sarcasmScale.setText("You getting there bro!");
+                        break;
+                    case 4:
+                        sarcasmScale.setText("Great Sarcasm");
+                        break;
+                    case 5:
+                        sarcasmScale.setText("Oo Burnnn!");
+                        break;
+                    default:
+                        sarcasmScale.setText("");
+                }
+            }
+        });
+
         swipeCardsView.setCardsSlideListener(new SwipeCardsView.CardsSlideListener() {
             @Override
             public void onShow(int index) {
+
             }
 
             @Override
             public void onCardVanish(int index, SwipeCardsView.SlideType type) {
-                if(index == count) {
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(),"No More Cards to Display",Toast.LENGTH_LONG).show());
-                }
-
-                if(type.equals(SwipeCardsView.SlideType.RIGHT)) {
-                    if (check == false) {
-                        final Bitmap bitmap = ((BitmapDrawable) like.getDrawable()).getBitmap();
-                        Drawable drawable = getResources().getDrawable(R.mipmap.heart_grey);
-                        final Bitmap heartGrey = ((BitmapDrawable) drawable).getBitmap();
-                        Drawable drawable2 = getResources().getDrawable(R.mipmap.heart_purple);
-                        final Bitmap heartPurple = ((BitmapDrawable) drawable2).getBitmap();
-                        if (bitmap.sameAs(heartGrey)) {
-                            Thread myThread = new Thread() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        like.setImageBitmap(heartPurple);
-                                        sleep(300);
-                                        like.setImageBitmap(heartGrey);
-                                        temp.remove(0);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            };
-                            myThread.start();
-                        }
-                    }
-                }
-                else if (type.equals(SwipeCardsView.SlideType.LEFT)) {
-                    if (check == false) {
-                        final Bitmap bitmap = ((BitmapDrawable) dislike.getDrawable()).getBitmap();
-                        Drawable drawable = getResources().getDrawable(R.mipmap.unheart_grey);
-                        final Bitmap unheartGrey = ((BitmapDrawable) drawable).getBitmap();
-                        Drawable drawable2 = getResources().getDrawable(R.mipmap.unheart_purple);
-                        final Bitmap unheartPurple = ((BitmapDrawable) drawable2).getBitmap();
-
-                        if (bitmap.sameAs(unheartGrey)) {
-                            Thread myThread = new Thread() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        dislike.setImageBitmap(unheartPurple);
-                                        sleep(300);
-                                        dislike.setImageBitmap(unheartGrey);
-                                        temp.remove(0);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            };
-                            myThread.start();
-                        }
-                    }
-                }
+                ratingBar.setRating(0);
+                sarcasmScale.setVisibility(View.GONE);
             }
 
             @Override
             public void onItemClick(View cardImageView, int index) {
+
             }
         });
-
-        //----------------------------------on like button click listener-------------------------------------
-        like.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Bitmap bitmap = ((BitmapDrawable) like.getDrawable()).getBitmap();
-                Drawable drawable = getResources().getDrawable(R.mipmap.heart_grey);
-                final Bitmap heartGrey = ((BitmapDrawable) drawable).getBitmap();
-                Drawable drawable2 = getResources().getDrawable(R.mipmap.heart_purple);
-                final Bitmap heartPurple = ((BitmapDrawable) drawable2).getBitmap();
-
-                if(bitmap.sameAs(heartGrey)) {
-                    Thread myThread = new Thread() {
-                        @Override
-                        public void run() {
-                            try {
-                                if(temp.size() == 0) {
-                                    like.setImageBitmap(heartGrey);
-                                    runOnUiThread(() -> Toast.makeText(getApplicationContext(),"No More Cards to Display",Toast.LENGTH_LONG).show());
-                                    return;
-                                }
-                                like.setImageBitmap(heartPurple);
-                                sleep(300);
-                                swipeCardsView.slideCardOut(SwipeCardsView.SlideType.RIGHT);
-                                like.setImageBitmap(heartGrey);
-                                temp.remove(0);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    };
-                    myThread.start();
-                }
-            }
-        });
-
-        //-------------------------------on dislike button click listener----------------------------------------
-        dislike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Bitmap bitmap = ((BitmapDrawable) dislike.getDrawable()).getBitmap();
-                Drawable drawable = getResources().getDrawable(R.mipmap.unheart_grey);
-                final Bitmap unheartGrey = ((BitmapDrawable) drawable).getBitmap();
-                Drawable drawable2 = getResources().getDrawable(R.mipmap.unheart_purple);
-                final Bitmap unheartPurple = ((BitmapDrawable) drawable2).getBitmap();
-
-                if(bitmap.sameAs(unheartGrey)) {
-                    Thread myThread = new Thread() {
-                        @Override
-                        public void run() {
-                            try {
-                                if(temp.size() == 0) {
-                                    dislike.setImageBitmap(unheartGrey);
-                                    runOnUiThread(() -> Toast.makeText(getApplicationContext(),"No More Cards to Display",Toast.LENGTH_LONG).show());
-                                    return;
-                                }
-                                dislike.setImageBitmap(unheartPurple);
-                                sleep(300);
-                                swipeCardsView.slideCardOut(SwipeCardsView.SlideType.LEFT);
-                                dislike.setImageBitmap(unheartGrey);
-                                temp.remove(0);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    };
-                    myThread.start();
-                }
-            }
-        });
-
-        //-------------------------------on skipCard button click listener----------------------------------------
-        skipCard.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                int value = rand.nextInt(2);
-                if (temp.size() > 0) {
-                    if (value == 0) {
-                        check = true;
-                        swipeCardsView.slideCardOut(SwipeCardsView.SlideType.RIGHT);
-                        temp.remove(0);
-                        check = false;
-                    }
-                    if (value == 1) {
-                        check = true;
-                        swipeCardsView.slideCardOut(SwipeCardsView.SlideType.LEFT);
-                        temp.remove(0);
-                        check = false;
-                    }
-                } else {
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "No More Cards to Display", Toast.LENGTH_LONG).show());
-                }
-            }
-        });
-        */
     }
 
     //------------------------options menu for settings bruh-------------------------------

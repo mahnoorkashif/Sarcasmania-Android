@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardView"
     android:layout_width="wrap_content"
-    android:layout_height="370dp"
+    android:layout_height="330dp"
     android:layout_gravity="center_horizontal"
     android:layout_marginStart="8dp"
     android:layout_marginLeft="30dp"
@@ -20,7 +20,7 @@
 
     <LinearLayout
         android:layout_width="310dp"
-        android:layout_height="370dp"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <LinearLayout
@@ -57,96 +57,84 @@
             android:textColor="@color/statusBarColor"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            android:gravity="right"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:textAlignment="gravity"
-            android:textColor="@color/hintcolor"
-            android:textStyle="bold"/>
-        <TextView
-            android:id="@+id/textView10"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Sarcasm Rating"
-            android:textAlignment="center"
-            android:textColor="@color/actionBarColor"
-            android:textStyle="bold"/>
-
-        <RatingBar
-            android:id="@+id/ratingBar"
-            style="@style/Widget.AppCompat.RatingBar.Indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:isIndicator="true"
-            android:numStars="5"
-            android:progressTint="@color/ratingbarcolor"
-            android:stepSize="0.1" />
-
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp">
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp">
 
             <TextView
-                android:id="@+id/textView13"
+                android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="4.7"
+                android:gravity="right"
                 android:textColor="@color/hintcolor"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textSize="20sp"/>
+
+            <ImageView
+                android:id="@+id/imageView8"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                app:srcCompat="@mipmap/sarcasm"
+                android:layout_gravity="left"/>
 
             <TextView
-                android:id="@+id/textView14"
+                android:id="@+id/textView7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="3"
+                android:gravity="right"
                 android:textColor="@color/hintcolor"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textSize="20sp"/>
+
+            <ImageView
+                android:id="@+id/imageView9"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                app:srcCompat="@mipmap/angry"
+                android:layout_gravity="left"/>
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="2"
+                android:gravity="right"
+                android:textColor="@color/hintcolor"
+                android:textStyle="bold"
+                android:textSize="20sp"/>
+
+            <ImageView
+                android:id="@+id/imageView10"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                app:srcCompat="@mipmap/humor"
+                android:layout_gravity="left"/>
         </LinearLayout>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/time"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/textView11"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="-10"
-                android:textColor="@color/actionBarColor"
-                android:textStyle="bold" />
-
-            <com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
-                android:id="@+id/rangeSeekbar1"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                app:bar_color="@color/hintcolor"
-                app:bar_highlight_color="@color/actionBarColor"
-                app:max_value="10"
-                app:min_value="-10" />
-
-            <TextView
-                android:id="@+id/textView12"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="10"
-                android:textColor="@color/actionBarColor"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:gravity="right|bottom"
+            android:layout_gravity="bottom"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:textAlignment="gravity"
+            android:textColor="@color/hintcolor"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 

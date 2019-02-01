@@ -91,7 +91,7 @@ public class SettingsActivity extends AppCompatActivity {
         email.setEnabled(false);
         email.setInputType(InputType.TYPE_NULL);
         email.setFocusable(false);
-        
+
         average = (TextView) findViewById(R.id.average);
 
         firebaseAuth = FirebaseAuth.getInstance();

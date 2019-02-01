@@ -6,10 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 import com.example.mahnoorkhan.sarcasmania.Classes.Post;
 import com.example.mahnoorkhan.sarcasmania.R;
@@ -55,10 +57,10 @@ public class CardAdapter extends BaseCardAdapter {
 
         TextView tweet = (TextView) cardview.findViewById(R.id.theTweet);
         TextView userName = (TextView) cardview.findViewById(R.id.theUsername);
-        RatingBar sarcasmRating = (RatingBar) cardview.findViewById(R.id.ratingBar);
-        CrystalRangeSeekbar crystalRangeSeekbar = (CrystalRangeSeekbar) cardview.findViewById(R.id.rangeSeekbar1);
-        TextView humor = (TextView) cardview.findViewById(R.id.textView14);
-        TextView insult = (TextView) cardview.findViewById(R.id.textView13);
+        //RatingBar sarcasmRating = (RatingBar) cardview.findViewById(R.id.ratingBar);
+        //CrystalRangeSeekbar crystalRangeSeekbar = (CrystalRangeSeekbar) cardview.findViewById(R.id.rangeSeekbar1);
+        //TextView humor = (TextView) cardview.findViewById(R.id.textView4);
+        //TextView insult = (TextView) cardview.findViewById(R.id.textView3);
         TextView timeStamp = (TextView) cardview.findViewById(R.id.time) ;
 
         float humorValue = post.getHumor();
@@ -72,7 +74,7 @@ public class CardAdapter extends BaseCardAdapter {
         userName.setText(post.getUsername());
         timeStamp.setText(post.getTime());
         float postSarcasmRating = post.getSarcasm()/20;
-        sarcasmRating.setRating((float)(Math.round(postSarcasmRating*100.0)/100.0));
+        /*sarcasmRating.setRating((float)(Math.round(postSarcasmRating*100.0)/100.0));
         if(humorValue > insultValue) {
             crystalRangeSeekbar.setMinStartValue(0);
             crystalRangeSeekbar.setMaxStartValue(humorValue*10);
@@ -96,5 +98,6 @@ public class CardAdapter extends BaseCardAdapter {
 
         crystalRangeSeekbar.setEnabled(false);
         crystalRangeSeekbar.apply();
+        */
     }
 }
