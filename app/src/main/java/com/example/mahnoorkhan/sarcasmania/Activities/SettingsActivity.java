@@ -84,8 +84,14 @@ public class SettingsActivity extends AppCompatActivity {
         username.setText(userFromMain);
 
         fullname = (EditText) findViewById(R.id.name);
+
         password = (EditText) findViewById(R.id.password);
+
         email = (EditText) findViewById(R.id.email);
+        email.setEnabled(false);
+        email.setInputType(InputType.TYPE_NULL);
+        email.setFocusable(false);
+        
         average = (TextView) findViewById(R.id.average);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -162,10 +168,5 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void onUpdateClick (View view) {
-        runOnUiThread(() -> Toast.makeText(SettingsActivity.this, "MUJHSE NAE HO RAHA YAR, NEHA JAANI TUM KAR DENA HEHEHE", Toast.LENGTH_LONG).show());
-        //shayad mera dimagh band hai baad mei kar loon
-        //wo na database mei tou araam se change horaha hai
-        //firebaseAuthentication mei nae ho raha
-        //I mean ho raha hai but listener manhoos
     }
 }
