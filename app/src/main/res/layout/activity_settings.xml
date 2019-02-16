@@ -7,168 +7,237 @@
     tools:context=".Activities.SettingsActivity"
     android:padding="20dp">
 
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+      >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/border"
-            android:weightSum="5">
-
-            <android.support.v7.widget.AppCompatImageView
-                android:layout_width="40dp"
-                android:layout_height="70dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:src="@mipmap/profile_purple"
-                android:background="@drawable/bg_profile_avatar"/>
-
-            <TextView
-                android:id="@+id/settingsusername"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:padding="12sp"
-                android:textColor="@color/statusBarColor"
-                android:textSize="22dp"
-                android:textStyle="bold"
-                android:layout_gravity="center"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            android:padding="20dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
-
+                android:background="@drawable/border"
+                android:orientation="horizontal"
+                android:weightSum="5">
                 <android.support.v7.widget.AppCompatImageView
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:padding="8dp"
+                    android:layout_width="40dp"
+                    android:layout_height="70dp"
                     android:layout_gravity="center"
-                    android:src="@mipmap/star_yellow"
-                    android:background="@drawable/rectangle"/>
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_profile_avatar"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="10dp"
+                    android:src="@mipmap/profile_purple" />
 
                 <TextView
-                    android:id="@+id/average"
-                    android:layout_width="match_parent"
+                    android:id="@+id/settingsusername"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="4"
                     android:padding="12sp"
                     android:textColor="@color/statusBarColor"
-                    android:textSize="14sp"
-                    android:textAlignment="center"/>
+                    android:textSize="22dp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:weightSum="2">
 
-                <TextView
-                    android:id="@+id/postnumber"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:padding="8dp"
-                    android:text="42"
-                    android:textColor="@color/statusBarColor"
-                    android:textSize="20sp"
-                    android:textAlignment="center"
-                    android:background="@drawable/rectangle"
-                    android:layout_gravity="center"/>
-
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="12sp"
-                    android:text="Total Posts"
-                    android:textColor="@color/statusBarColor"
-                    android:textSize="14sp"
-                    android:textAlignment="center"/>
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/rectangle"
+                        android:padding="8dp"
+                        android:src="@mipmap/star_yellow" />
+
+                    <TextView
+                        android:id="@+id/average"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12sp"
+                        android:textAlignment="center"
+                        android:textColor="@color/statusBarColor"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/postnumber"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/rectangle"
+                        android:padding="8dp"
+                        android:text="42"
+                        android:textAlignment="center"
+                        android:textColor="@color/statusBarColor"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12sp"
+                        android:text="Total Posts"
+                        android:textAlignment="center"
+                        android:textColor="@color/statusBarColor"
+                        android:textSize="14sp" />
+                </LinearLayout>
             </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/editProfileNameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Full Name"
+                android:textColorHint="@color/hintcolor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="0dp">
+
+                <EditText
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textColor="@color/actionBarColor"
+                    android:textColorHighlight="@color/statusBarColor"
+                    android:textColorLink="@color/statusBarColor"
+                    android:textSize="20dp"
+                    android:typeface="sans"
+                    tools:textColorHighlight="@color/statusBarColor" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/editProfileUsernameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="Username"
+                android:textColorHint="@color/hintcolor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <EditText
+                    android:id="@+id/username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textColor="@color/actionBarColor"
+                    android:textColorHighlight="@color/statusBarColor"
+                    android:textColorLink="@color/statusBarColor"
+                    android:textSize="20dp"
+                    android:typeface="sans"
+                    tools:textColorHighlight="@color/statusBarColor" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/editProfileEmailLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="Email Address"
+                android:textColorHint="@color/hintcolor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:ems="10"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:textColor="@color/actionBarColor"
+                    android:textColorHighlight="@color/statusBarColor"
+                    android:textColorLink="@color/statusBarColor"
+                    android:textSize="20dp"
+                    android:typeface="sans"
+                    tools:textColorHighlight="@color/statusBarColor" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/editProfilePasswordLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="Password"
+                android:textColorHint="@color/hintcolor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:ems="10"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:textColor="@color/actionBarColor"
+                    android:textColorHighlight="@color/statusBarColor"
+                    android:textColorLink="@color/statusBarColor"
+                    android:textSize="20dp"
+                    android:typeface="sans"
+                    tools:textColorHighlight="@color/statusBarColor" />
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/update"
+                style="@style/Widget.AppCompat.Button.Small"
+                android:layout_width="200dp"
+                android:layout_height="40sp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/rounded_edges"
+                android:onClick="onUpdateClick"
+                android:text="Update"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
         </LinearLayout>
-
-        <EditText
-            android:id="@+id/name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/statusBarColor"
-            android:hint="Full Name"
-            android:textSize="20sp"
-            android:gravity="top|left"
-            android:inputType="text"/>
-
-        <EditText
-            android:id="@+id/username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:textColor="@color/statusBarColor"
-            android:layout_marginTop="20dp"
-            android:hint="Username"
-            android:textSize="20sp"
-            android:gravity="top|left"
-            android:inputType="text"/>
-
-        <EditText
-            android:id="@+id/email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="20dp"
-            android:hint="Email"
-            android:textColor="@color/statusBarColor"
-            android:textSize="20sp"
-            android:gravity="top|left"
-            android:inputType="text"/>
-
-        <EditText
-            android:id="@+id/password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:textColor="@color/statusBarColor"
-            android:layout_marginTop="20dp"
-            android:hint="Password"
-            android:textSize="20sp"
-            android:gravity="top|left"
-            android:inputType="textPassword"/>
-
-        <Button
-            android:id="@+id/update"
-            style="@style/Widget.AppCompat.Button.Small"
-            android:layout_width="200dp"
-            android:layout_height="40sp"
-            android:layout_gravity="center"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/rounded_edges"
-            android:onClick="onUpdateClick"
-            android:text="Update"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-
-    </LinearLayout>
-
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>
