@@ -16,8 +16,8 @@ public class FirebaseHelper {
         return databaseReference;
     }
 
-    public void newUser(String username, String fullname, String email, String password) {
-        User user = new User(username, fullname, email, password);
+    public void newUser(String username, String fullname, String email, String password, String picture) {
+        User user = new User(username, fullname, email, password, picture);
         databaseReference.child("Users").child(user.getUsername()).setValue(user);
     }
 

@@ -140,7 +140,7 @@ public class signup extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()) {
                                     FirebaseHelper firebaseHelper = new FirebaseHelper();
-                                    firebaseHelper.newUser(username.getText().toString(),"",email.getText().toString(),password.getText().toString());
+                                    firebaseHelper.newUser(username.getText().toString(),"",email.getText().toString(),password.getText().toString(),"");
                                     Log.d("Success: ",task.getResult().toString());
                                     progressDialog.dismiss();
                                     Intent i = new Intent(getApplicationContext(),login.class);

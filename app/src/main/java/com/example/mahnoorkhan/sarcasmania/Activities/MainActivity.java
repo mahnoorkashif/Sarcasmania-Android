@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -15,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +25,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,6 +43,7 @@ import com.bumptech.glide.Glide;
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 import com.example.mahnoorkhan.sarcasmania.Adapter.CardAdapter;
 import com.example.mahnoorkhan.sarcasmania.Adapter.profileAdapter;
+import com.example.mahnoorkhan.sarcasmania.Classes.User;
 import com.example.mahnoorkhan.sarcasmania.Fragment.NewfeedFragment;
 import com.example.mahnoorkhan.sarcasmania.Fragment.PostFragment;
 import com.example.mahnoorkhan.sarcasmania.Fragment.ProfileFragment;
@@ -56,6 +60,8 @@ import com.huxq17.swipecardsview.SwipeCardsView;
 
 import org.w3c.dom.Text;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -82,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
     View selected;
     RatingBar ratingBar;
     TextView sarcasmScale;
+    int num;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,6 +183,8 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
         databaseReference = FirebaseDatabase.getInstance().getReference();
         usernameFromLogin = getIntent().getExtras().getString("usernamefromlogin");
 
+        num = 1;
+
     }
 
 
@@ -202,6 +211,8 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
             super.onBackPressed();
         }
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -326,6 +337,11 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public void setProfile() {
         profileUsername = (TextView) findViewById(R.id.profileUsername);
         profileUsername.setText(usernameFromLogin);
@@ -355,6 +371,40 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                 }
                 profileAdapter profileAdapter = new profileAdapter(MainActivity.this,modelList2);
                 recyclerView.setAdapter(profileAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    public void setImage() {
+        final ImageView v=findViewById(R.id.profilePicture);
+        final TextView t = (TextView) findViewById(R.id.profileUsername);
+        databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            User u;
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                    u = dsp.getValue(User.class);
+                    if(u != null) {
+                        if (u.getUsername().equals(t.getText().toString())) {
+                            String pic = u.getPicture();
+                            if(pic != null) {
+                                byte outImage[] = Base64.decode(pic, Base64.DEFAULT);
+                                ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
+                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+                                Bitmap theImage = BitmapFactory.decodeStream(imageStream);
+                                theImage.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                                v.setImageBitmap(theImage);
+                            }
+                        }
+                    }
+                }
             }
 
             @Override

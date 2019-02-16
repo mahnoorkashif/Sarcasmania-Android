@@ -7,15 +7,17 @@ public class User implements Serializable {
     private String fullname;
     private String email;
     private String password;
+    private String picture;
 
     public User() {
     }
 
-    public User(String username, String fullname, String email, String password) {
+    public User(String username, String fullname, String email, String password, String picture) {
         this.username = username;
         this.fullname = fullname;
         this.email = email;
         this.password = password;
+        this.picture = picture;
     }
 
     public String getUsername() {
@@ -48,5 +50,13 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 }
