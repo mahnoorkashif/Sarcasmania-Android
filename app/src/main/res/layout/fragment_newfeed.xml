@@ -18,7 +18,7 @@
             <com.huxq17.swipecardsview.SwipeCardsView
                 android:id="@+id/swipeCardsView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="370dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
@@ -103,7 +103,7 @@
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:max="2"
+                    android:max="1"
                     android:progress="0"
                     android:layout_marginBottom="15dp"/>
 
@@ -121,7 +121,7 @@
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:max="2"
+                    android:max="1"
                     android:progress="0" />
             </LinearLayout>
 

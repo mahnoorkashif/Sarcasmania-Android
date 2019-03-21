@@ -34,15 +34,25 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 import com.example.mahnoorkhan.sarcasmania.Adapter.CardAdapter;
 import com.example.mahnoorkhan.sarcasmania.Adapter.profileAdapter;
+import com.example.mahnoorkhan.sarcasmania.Classes.FirebaseHelper;
 import com.example.mahnoorkhan.sarcasmania.Classes.User;
 import com.example.mahnoorkhan.sarcasmania.Fragment.NewfeedFragment;
 import com.example.mahnoorkhan.sarcasmania.Fragment.PostFragment;
@@ -58,6 +68,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.huxq17.swipecardsview.SwipeCardsView;
 
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.ByteArrayInputStream;
@@ -84,11 +95,14 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
     TextView postUsername;
     TextView profileUsername;
     DatabaseReference databaseReference;
+    FirebaseHelper firebaseHelper;
     GestureDetector gestureDetector;
     View selected;
     RatingBar ratingBar;
     TextView sarcasmScale;
     int num;
+    Button createPost;
+    EditText newPost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        firebaseHelper = new FirebaseHelper();
         usernameFromLogin = getIntent().getExtras().getString("usernamefromlogin");
 
         num = 1;
@@ -417,7 +432,43 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
     @Override
     public void setPost() {
         postUsername = (TextView) findViewById(R.id.postUsername);
+        createPost = (Button) findViewById(R.id.post_submit);
+        newPost = (EditText) findViewById(R.id.post_text);
         postUsername.setText(usernameFromLogin);
+
+
+        final Context c = this;
+
+        createPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = newPost.getText().toString();
+                if(text.length() <= 0 || text.isEmpty()) {
+                    Toast.makeText(c,"You don't seem to be Sarcastic AT ALL! Type Something",Toast.LENGTH_LONG).show();
+                }
+                if(text.length() <= 250) {
+                    RequestQueue queue = Volley.newRequestQueue(c);
+                    String url ="https://sarcasmania-api.herokuapp.com/api/sarcasmania?text="+text;
+                    JsonObjectRequest stringRequest = new JsonObjectRequest(url, null,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    int humor = response.optInt("Humor");
+                                    int insult = response.optInt("Insult");
+                                    int sarcasm = response.optInt("Sarcasm");
+                                    //newPost.setText(humor+"");
+                                    firebaseHelper.newPost(1,text,usernameFromLogin,sarcasm,humor,insult,"hello123");
+                                }
+                            }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            newPost.setText("That didn't work!");
+                        }
+                    });
+                    queue.add(stringRequest);
+                }
+            }
+        });
     }
 
     public static boolean isNetworkAvaliable(Context ctx) {
