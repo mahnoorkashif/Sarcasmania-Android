@@ -1,7 +1,9 @@
 package com.example.mahnoorkhan.sarcasmania.Activities;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -73,7 +75,9 @@ import org.w3c.dom.Text;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
@@ -85,24 +89,23 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
     private TabLayout.Tab home;
     private TabLayout.Tab upload;
     private TabLayout.Tab profile;
-    android.support.v7.app.ActionBar actionBar;
+    private android.support.v7.app.ActionBar actionBar;
     private SwipeCardsView swipeCardsView;
     private List<Post> modelList;
     private ArrayList<Post> modelList2;
-    Random rand;
-    Boolean check;
-    String usernameFromLogin;
-    TextView postUsername;
-    TextView profileUsername;
-    DatabaseReference databaseReference;
-    FirebaseHelper firebaseHelper;
-    GestureDetector gestureDetector;
-    View selected;
-    RatingBar ratingBar;
-    TextView sarcasmScale;
-    int num;
-    Button createPost;
-    EditText newPost;
+    private Boolean check;
+    private String usernameFromLogin;
+    private TextView postUsername;
+    private TextView profileUsername;
+    private DatabaseReference databaseReference;
+    private FirebaseHelper firebaseHelper;
+    private RatingBar ratingBar;
+    private TextView sarcasmScale;
+    private int num;
+    private Button createPost;
+    private EditText newPost;
+    private ImageView humorous;
+    private ImageView insulting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -274,12 +277,7 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
             runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Network not available. Turn on WIFI/4G/3G", Toast.LENGTH_LONG).show());
         }
 
-        //---------------------------------like dislike skipCard buttons and temp data list--------------------------------------
-        rand = new Random();
-        final List<Post> temp = new ArrayList<Post>();
-        temp.addAll(modelList);
-        final int count = temp.size()-1;
-
+        //--------------------------------- rating sarcasm --------------------------------------
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         sarcasmScale = (TextView) findViewById(R.id.textView5);
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
@@ -325,6 +323,49 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
             @Override
             public void onItemClick(View cardImageView, int index) {
 
+            }
+        });
+        //------------------------ marking humorous ------------------------------------------
+        humorous = (ImageView) findViewById(R.id.imageView7);
+        final Bitmap bitmap = ((BitmapDrawable) humorous.getDrawable()).getBitmap();
+
+        Drawable drawable = getDrawable(R.mipmap.heart_grey);
+        Bitmap heartGrey = ((BitmapDrawable) drawable).getBitmap();
+        Drawable drawable2 = getDrawable(R.mipmap.heart_purple);
+        final Bitmap heartPurple = ((BitmapDrawable) drawable2).getBitmap();
+
+        humorous.bringToFront();
+        humorous.setClickable(true);
+        humorous.setOnClickListener(v -> {
+            runOnUiThread(() -> Toast.makeText(getApplicationContext(),"on click only",Toast.LENGTH_LONG).show());
+            if(bitmap.sameAs(heartGrey)) {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(),"BHAI HELLO CARDS KHATAM",Toast.LENGTH_LONG).show());
+                humorous.setImageBitmap(heartPurple);
+            }
+
+            if(bitmap.sameAs(heartPurple)) {
+                humorous.setImageBitmap(heartGrey);
+            }
+        });
+
+        //------------------------ marking insulting ------------------------------------------
+        insulting = (ImageView) findViewById(R.id.imageView7);
+        final Bitmap bitmap2 = ((BitmapDrawable) humorous.getDrawable()).getBitmap();
+
+        Drawable drawable1 = getDrawable(R.mipmap.unheart_grey);
+        Bitmap unheartGrey = ((BitmapDrawable) drawable1).getBitmap();
+        Drawable drawable3 = getDrawable(R.mipmap.unheart_purple);
+        final Bitmap unheartPurple = ((BitmapDrawable) drawable3).getBitmap();
+
+        insulting.bringToFront();
+        insulting.setClickable(true);
+        insulting.setOnClickListener(v -> {
+            if(bitmap2.sameAs(unheartGrey)) {
+                humorous.setImageBitmap(unheartPurple);
+            }
+
+            if(bitmap.sameAs(unheartPurple)) {
+                humorous.setImageBitmap(unheartGrey);
             }
         });
     }
@@ -397,7 +438,7 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
 
     @Override
     public void setImage() {
-        final ImageView v=findViewById(R.id.profilePicture);
+        final ImageView v=(ImageView)findViewById(R.id.profilePicture);
         final TextView t = (TextView) findViewById(R.id.profileUsername);
         databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
             User u;
@@ -442,6 +483,7 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
         createPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final ProgressDialog progressDialog = ProgressDialog.show(c, "Calculating Scores...", "Please wait...", true);
                 String text = newPost.getText().toString();
                 if(text.length() <= 0 || text.isEmpty()) {
                     Toast.makeText(c,"You don't seem to be Sarcastic AT ALL! Type Something",Toast.LENGTH_LONG).show();
@@ -453,15 +495,69 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                             new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {
-                                    int humor = response.optInt("Humor");
-                                    int insult = response.optInt("Insult");
-                                    int sarcasm = response.optInt("Sarcasm");
+                                    int humors = response.optInt("Humor");
+                                    int insults = response.optInt("Insult");
+                                    int sarcasms = response.optInt("Sarcasm");
                                     //newPost.setText(humor+"");
-                                    firebaseHelper.newPost(1,text,usernameFromLogin,sarcasm,humor,insult,"hello123");
+                                    Calendar calendar = Calendar.getInstance();
+                                    SimpleDateFormat mdformat = new SimpleDateFormat("EEEE h:mm a");
+                                    String dateAndTime = mdformat.format(calendar.getTime());
+                                    databaseReference.child("Posts").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        Post post;
+                                        int count;
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                                                if(dsp != null) {
+                                                    post = dsp.getValue(Post.class);
+                                                    if(post != null) {
+                                                        count = post.getTweetID();
+                                                    }
+                                                }
+                                            }
+                                            firebaseHelper.newPost(count+1,text,usernameFromLogin,sarcasms,humors,insults,dateAndTime);
+                                            progressDialog.dismiss();
+                                            final Dialog dialog = new Dialog(c);
+                                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                            dialog.setContentView(R.layout.profilepostinfo);
+                                            TextView timee = (TextView) dialog.findViewById(R.id.timesss);
+                                            TextView posts = (TextView) dialog.findViewById(R.id.textt);
+                                            RatingBar sarcasmRating = (RatingBar) dialog.findViewById(R.id.ratingBar2) ;
+
+                                            timee.setText(dateAndTime);
+                                            posts.setText(text);
+
+                                            float postSarcasmRating = sarcasms/20;
+                                            sarcasmRating.setRating((float)(Math.round(postSarcasmRating*100.0)/100.0));
+
+                                            TextView humor = (TextView) dialog.findViewById(R.id.humors);
+                                            TextView insult = (TextView) dialog.findViewById(R.id.insults);
+
+                                            humor.setText("\tHumor: " + humors);
+                                            insult.setText("\tInsult: " + insults);
+//                                            newPost.setText(humor+" "+insult+" "+sarcasm);
+
+                                            dialog.setCancelable(true);
+                                            dialog.show();
+
+                                            dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                                @Override
+                                                public void onCancel(DialogInterface dialog) {
+                                                    newPost.setText("");
+                                                }
+                                            });
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        }
+                                    });
+
                                 }
                             }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+                            progressDialog.dismiss();
                             newPost.setText("That didn't work!");
                         }
                     });

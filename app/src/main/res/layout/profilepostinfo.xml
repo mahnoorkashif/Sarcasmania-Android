@@ -8,16 +8,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:orientation="vertical"
-        android:layout_marginRight="5dp"
-        android:layout_marginLeft="5dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <TextView
             android:id="@+id/timesss"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="5dp"
             android:gravity="right"
             android:text="TextView"
@@ -27,9 +34,10 @@
         <TextView
             android:id="@+id/textt"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
+            android:layout_marginBottom="10dp"
             android:autoLink="web"
             android:linksClickable="true"
             android:text="TextView"
@@ -42,11 +50,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="10dp"
             android:isIndicator="true"
             android:numStars="5"
             android:progressTint="@color/ratingbarcolor"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
             android:stepSize="0.1" />
 
         <LinearLayout
@@ -55,6 +64,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/insults"
                 android:layout_width="wrap_content"
@@ -80,31 +90,7 @@
             android:layout_marginBottom="20dp"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textView111"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="-10"
-                android:textColor="@color/actionBarColor"
-                android:textStyle="bold" />
 
-            <com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
-                android:id="@+id/rangeSeekbar2"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                app:bar_color="@color/hintcolor"
-                app:bar_highlight_color="@color/actionBarColor"
-                app:max_value="10"
-                app:min_value="-10" />
-
-            <TextView
-                android:id="@+id/textView121"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="10"
-                android:textColor="@color/actionBarColor"
-                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 

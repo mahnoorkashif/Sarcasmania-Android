@@ -43,8 +43,8 @@ public class profileAdapter extends RecyclerView.Adapter<profileAdapter.ViewHold
             super(itemView);
             textView = (TextView) itemView.findViewById(R.id.textView);
             textView2 = (TextView) itemView.findViewById(R.id.timess);
-            haha = (ImageView) itemView.findViewById(R.id.imageView3);
-            insult = (ImageView) itemView.findViewById(R.id.imageView4);
+//            haha = (ImageView) itemView.findViewById(R.id.imageView3);
+//            insult = (ImageView) itemView.findViewById(R.id.imageView4);
         }
     }
 
@@ -65,27 +65,27 @@ public class profileAdapter extends RecyclerView.Adapter<profileAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         TextView tweet = viewHolder.textView;
         TextView times = viewHolder.textView2;
-        ImageView insult = viewHolder.insult;
-        ImageView haha = viewHolder.haha;
+//        ImageView insult = viewHolder.insult;
+//        ImageView haha = viewHolder.haha;
         Post post = List.get(i);
         tweet.setText(post.getTweet());
         times.setText(post.getTime());
-        Glide.with(context).load(R.mipmap.insult).into(insult);
-        Glide.with(context).load(R.mipmap.haha).into(haha);
-        haha.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "HUMOROUS", Toast.LENGTH_LONG).show();
-
-            }
-        });
-        insult.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "INSULTING", Toast.LENGTH_LONG).show();
-
-            }
-        });
+//        Glide.with(context).load(R.mipmap.insult).into(insult);
+//        Glide.with(context).load(R.mipmap.haha).into(haha);
+//        haha.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(context, "HUMOROUS", Toast.LENGTH_LONG).show();
+//
+//            }
+//        });
+//        insult.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(context, "INSULTING", Toast.LENGTH_LONG).show();
+//
+//            }
+//        });
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         tweet.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,11 +100,10 @@ public class profileAdapter extends RecyclerView.Adapter<profileAdapter.ViewHold
                                 if(postt != null && postt.getTweet().equals(post.getTweet())) {
                                     final Dialog dialog = new Dialog(context);
                                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                    dialog.setCancelable(false);
+//                                    dialog.setCancelable(false);
                                     dialog.setContentView(R.layout.profilepostinfo);
                                     TextView timee = (TextView) dialog.findViewById(R.id.timesss);
                                     TextView posts = (TextView) dialog.findViewById(R.id.textt);
-                                    CrystalRangeSeekbar crystalRangeSeekbar = (CrystalRangeSeekbar) dialog.findViewById(R.id.rangeSeekbar2);
                                     RatingBar sarcasmRating = (RatingBar) dialog.findViewById(R.id.ratingBar2) ;
 
                                     timee.setText(post.getTime());
@@ -115,40 +114,16 @@ public class profileAdapter extends RecyclerView.Adapter<profileAdapter.ViewHold
                                     float humorValue = postt.getHumor();
                                     float insultValue = postt.getInsult();
 
-                                    Drawable drawable1 = context.getResources().getDrawable(R.mipmap.thumbend);
-                                    final Bitmap chandler = ((BitmapDrawable) drawable1).getBitmap();
-                                    Drawable drawable2 = context.getResources().getDrawable(R.mipmap.thumbstart);
-                                    final Bitmap purpledot = ((BitmapDrawable) drawable2).getBitmap();
-
                                     TextView humor = (TextView) dialog.findViewById(R.id.humors);
                                     TextView insult = (TextView) dialog.findViewById(R.id.insults);
 
-                                    if(humorValue > insultValue) {
-                                        crystalRangeSeekbar.setMinStartValue(0);
-                                        crystalRangeSeekbar.setMaxStartValue(humorValue*10);
-                                        crystalRangeSeekbar.setLeftThumbBitmap(purpledot);
-                                        crystalRangeSeekbar.setRightThumbBitmap(chandler);
-                                    }
-                                    if(insultValue > humorValue) {
-                                        crystalRangeSeekbar.setMinStartValue(insultValue*-10);
-                                        crystalRangeSeekbar.setMaxStartValue(0);
-                                        crystalRangeSeekbar.setRightThumbBitmap(purpledot);
-                                        crystalRangeSeekbar.setLeftThumbBitmap(chandler);
-                                    }
-                                    if(humorValue == insultValue) {
-                                        crystalRangeSeekbar.setMinStartValue(0);
-                                        crystalRangeSeekbar.setMaxStartValue(0);
-                                        crystalRangeSeekbar.setLeftThumbBitmap(chandler);
-                                        crystalRangeSeekbar.setRightThumbBitmap(chandler);
-                                    }
-                                    humor.setText("\tHumor: " + humorValue*100 + "%");
-                                    insult.setText("\tInsult: " + insultValue*100 + "%");
-
-                                    crystalRangeSeekbar.setEnabled(false);
-                                    crystalRangeSeekbar.apply();
+                                    humor.setText("\tHumor: " + humorValue);
+                                    insult.setText("\tInsult: " + insultValue);
 
                                     dialog.setCancelable(true);
                                     dialog.show();
+
+
                                 }
                             }
                         }
