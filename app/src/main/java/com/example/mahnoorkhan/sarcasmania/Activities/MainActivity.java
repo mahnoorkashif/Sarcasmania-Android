@@ -39,6 +39,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -106,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
     private EditText newPost;
     private ImageView humorous;
     private ImageView insulting;
+    private LinearLayout linearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -278,35 +280,35 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
         }
 
         //--------------------------------- rating sarcasm --------------------------------------
-        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-        sarcasmScale = (TextView) findViewById(R.id.textView5);
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                sarcasmScale.setVisibility(View.VISIBLE);
-                sarcasmScale.setText(String.valueOf(rating));
-                switch ((int) ratingBar.getRating()) {
-                    case 1:
-                        sarcasmScale.setText("Very bad Sarcasm");
-                        break;
-                    case 2:
-                        sarcasmScale.setText("So so hai");
-                        break;
-                    case 3:
-                        sarcasmScale.setText("You getting there bro!");
-                        break;
-                    case 4:
-                        sarcasmScale.setText("Great Sarcasm");
-                        break;
-                    case 5:
-                        sarcasmScale.setText("Oo Burnnn!");
-                        break;
-                    default:
-                        sarcasmScale.setText("");
-                }
-            }
-        });
+//        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+//        sarcasmScale = (TextView) findViewById(R.id.textView5);
+//        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+//
+//            @Override
+//            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+//                sarcasmScale.setVisibility(View.VISIBLE);
+//                sarcasmScale.setText(String.valueOf(rating));
+//                switch ((int) ratingBar.getRating()) {
+//                    case 1:
+//                        sarcasmScale.setText("Very bad Sarcasm");
+//                        break;
+//                    case 2:
+//                        sarcasmScale.setText("So so hai");
+//                        break;
+//                    case 3:
+//                        sarcasmScale.setText("You getting there bro!");
+//                        break;
+//                    case 4:
+//                        sarcasmScale.setText("Great Sarcasm");
+//                        break;
+//                    case 5:
+//                        sarcasmScale.setText("Oo Burnnn!");
+//                        break;
+//                    default:
+//                        sarcasmScale.setText("");
+//                }
+//            }
+//        });
 
         swipeCardsView.setCardsSlideListener(new SwipeCardsView.CardsSlideListener() {
             @Override
@@ -325,8 +327,13 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
 
             }
         });
+
+//        linearLayout = (LinearLayout) findViewById(R.id.ratebuttons);
+//        linearLayout.bringToFront();
+
         //------------------------ marking humorous ------------------------------------------
         humorous = (ImageView) findViewById(R.id.imageView7);
+//        linearLayout.bringChildToFront(humorous);
         final Bitmap bitmap = ((BitmapDrawable) humorous.getDrawable()).getBitmap();
 
         Drawable drawable = getDrawable(R.mipmap.heart_grey);
@@ -350,6 +357,7 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
 
         //------------------------ marking insulting ------------------------------------------
         insulting = (ImageView) findViewById(R.id.imageView7);
+//        linearLayout.bringChildToFront(insulting);
         final Bitmap bitmap2 = ((BitmapDrawable) humorous.getDrawable()).getBitmap();
 
         Drawable drawable1 = getDrawable(R.mipmap.unheart_grey);
