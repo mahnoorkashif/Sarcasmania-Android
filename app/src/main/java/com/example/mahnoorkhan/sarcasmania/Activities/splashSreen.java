@@ -53,7 +53,7 @@ public class splashSreen extends AppCompatActivity {
 //        Calendar calendar = Calendar.getInstance();
 //        SimpleDateFormat mdformat = new SimpleDateFormat("EEEE h:mm a");
 //        String dateAndTime = mdformat.format(calendar.getTime());
-//        firebaseHelper.newPost(2,"This is the most sarcastic tweet ever.", "mahnoorkhan",100,0,0,dateAndTime);
+//        firebaseHelper.newPost(3,"This is the most sarcastic tweet ever.", "mahnoorkhan",100,0,0,dateAndTime);
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
         imageView1 = (ImageView) findViewById(R.id.imageView1);
