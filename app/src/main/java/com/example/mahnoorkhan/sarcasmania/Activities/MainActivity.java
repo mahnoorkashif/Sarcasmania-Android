@@ -330,8 +330,6 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                                 Toast.makeText(c, "Thank you for your feedback.", Toast.LENGTH_LONG).show();
                             }
                         });
-
-
                     }
 
                     swipeCardsView.setCardsSlideListener(new SwipeCardsView.CardsSlideListener() {
@@ -437,91 +435,6 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
         } else {
             runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Network not available. Turn on WIFI/4G/3G", Toast.LENGTH_LONG).show());
         }
-
-
-
-//        //------------------------ marking humorous ------------------------------------------
-//        humorous = (ImageView) findViewById(R.id.imageView7);
-//        View s = swipeCardsView.getChildAt(0);
-//        TextView tweetid = (TextView) s.findViewById(R.id.tweetid);
-//        TextView text = (TextView) s.findViewById(R.id.theTweet);
-//
-//        Toast.makeText(this,tweetid.getId()+"",Toast.LENGTH_LONG).show();
-//
-//        final Context c = this;
-//
-//        humorous.setClickable(true);
-//        humorous.setOnClickListener(v -> {
-//
-//            final Bitmap bitmap = ((BitmapDrawable) humorous.getDrawable()).getBitmap();
-//            Drawable drawable = getDrawable(R.mipmap.heart_grey);
-//            Bitmap heartGrey = ((BitmapDrawable) drawable).getBitmap();
-//            Drawable drawable2 = getDrawable(R.mipmap.heart_purple);
-//            Bitmap heartPurple = ((BitmapDrawable) drawable2).getBitmap();
-//
-//            if (bitmap.sameAs(heartPurple)) {
-//                humorous.setImageBitmap(heartGrey);
-//                firebaseHelper.humorFeed(0, usernameFromLogin, Integer.parseInt(tweetid.getText().toString()));
-//                RequestQueue queue = Volley.newRequestQueue(this);
-//                String url = "https://humor-feedback.herokuapp.com/api/sarcasmania?text=" + text.getText().toString() + "&label=0";
-//                JsonObjectRequest stringRequest = new JsonObjectRequest(url, null,
-//                        new Response.Listener<JSONObject>() {
-//                            @Override
-//                            public void onResponse(JSONObject response) {
-//                                Toast.makeText(c, "Thank you for your feedback.", Toast.LENGTH_LONG).show();
-//                            }
-//                        }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Toast.makeText(c, "Sorry! That didn't work, Please try again.", Toast.LENGTH_LONG).show();
-//                    }
-//                });
-//                queue.add(stringRequest);
-//            }
-//            if (bitmap.sameAs(heartGrey)) {
-//                humorous.setImageBitmap(heartPurple);
-//                firebaseHelper.humorFeed(1, usernameFromLogin, Integer.parseInt(tweetid.getText().toString()));
-//                RequestQueue queue = Volley.newRequestQueue(this);
-//                String url = "https://humor-feedback.herokuapp.com/api/sarcasmania?text=" + text.getText().toString() + "&label=1";
-//                JsonObjectRequest stringRequest = new JsonObjectRequest(url, null,
-//                        new Response.Listener<JSONObject>() {
-//                            @Override
-//                            public void onResponse(JSONObject response) {
-//                                Toast.makeText(c, "Thank you for your feedback.", Toast.LENGTH_LONG).show();
-//                            }
-//                        }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Toast.makeText(c, "Sorry! That didn't work, Please try again.", Toast.LENGTH_LONG).show();
-//                    }
-//                });
-//                queue.add(stringRequest);
-//            }
-//        });
-//
-//        //------------------------ marking insulting ------------------------------------------
-//        insulting = (ImageView) findViewById(R.id.imageView6);
-//
-//        insulting.setClickable(true);
-//        insulting.setOnClickListener(v -> {
-//
-//            final Bitmap bitmap2 = ((BitmapDrawable) insulting.getDrawable()).getBitmap();
-//            Drawable drawable1 = getDrawable(R.mipmap.unheart_grey);
-//            Bitmap unheartGrey = ((BitmapDrawable) drawable1).getBitmap();
-//            Drawable drawable3 = getDrawable(R.mipmap.unheart_purple);
-//            Bitmap unheartPurple = ((BitmapDrawable) drawable3).getBitmap();
-//
-//            if (bitmap2.sameAs(unheartPurple)) {
-//                insulting.setImageBitmap(unheartGrey);
-//                firebaseHelper.insultFeed(0, usernameFromLogin, Integer.parseInt(tweetid.getText().toString()));
-//                Toast.makeText(c, "Thank you for your feedback.", Toast.LENGTH_LONG).show();
-//            }
-//            if (bitmap2.sameAs(unheartGrey)) {
-//                insulting.setImageBitmap(unheartPurple);
-//                firebaseHelper.insultFeed(1, usernameFromLogin, Integer.parseInt(tweetid.getText().toString()));
-//                Toast.makeText(c, "Thank you for your feedback.", Toast.LENGTH_LONG).show();
-//            }
-//        });
     }
 
     //------------------------options menu for settings bruh-------------------------------
