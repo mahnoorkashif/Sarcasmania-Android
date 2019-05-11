@@ -8,8 +8,8 @@ public class Post implements Serializable {
     private String tweet;
     private String username;
     private float sarcasm;
-    private float humor;
-    private float insult;
+    private int humor;
+    private int insult;
 
 //    private float updatedSarcasm;
 //    private float updatedHumor;
@@ -20,7 +20,7 @@ public class Post implements Serializable {
     public Post() {
     }
 
-    public Post(int tweetID, String tweet, String username, float sarcasm, float humor, float insult, String time) {
+    public Post(int tweetID, String tweet, String username, float sarcasm, int humor, int insult, String time) {
         this.tweetID = tweetID;
         this.tweet = tweet;
         this.username = username;
@@ -53,19 +53,19 @@ public class Post implements Serializable {
         this.sarcasm = sarcasm;
     }
 
-    public float getHumor() {
+    public int getHumor() {
         return humor;
     }
 
-    public void setHumor(float humor) {
+    public void setHumor(int humor) {
         this.humor = humor;
     }
 
-    public float getInsult() {
+    public int getInsult() {
         return insult;
     }
 
-    public void setInsult(float insult) {
+    public void setInsult(int insult) {
         this.insult = insult;
     }
 

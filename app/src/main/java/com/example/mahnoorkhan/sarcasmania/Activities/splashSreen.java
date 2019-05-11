@@ -12,7 +12,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.example.mahnoorkhan.sarcasmania.Classes.FirebaseHelper;
 import com.example.mahnoorkhan.sarcasmania.R;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 
 public class splashSreen extends AppCompatActivity {
@@ -45,10 +49,11 @@ public class splashSreen extends AppCompatActivity {
             window.setStatusBarColor(this.getResources().getColor(R.color.statusBarColor));
         }
 
-     /*   FirebaseHelper firebaseHelper = new FirebaseHelper();
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat mdformat = new SimpleDateFormat("EEEE h:mm a");
-        String dateAndTime = mdformat.format(calendar.getTime());*/
+//        FirebaseHelper firebaseHelper = new FirebaseHelper();
+//        Calendar calendar = Calendar.getInstance();
+//        SimpleDateFormat mdformat = new SimpleDateFormat("EEEE h:mm a");
+//        String dateAndTime = mdformat.format(calendar.getTime());
+//        firebaseHelper.newPost(2,"This is the most sarcastic tweet ever.", "mahnoorkhan",100,0,0,dateAndTime);
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
         imageView1 = (ImageView) findViewById(R.id.imageView1);

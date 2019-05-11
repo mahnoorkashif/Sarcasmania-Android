@@ -1,14 +1,11 @@
 package com.example.mahnoorkhan.sarcasmania.Activities;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -18,7 +15,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -28,12 +24,9 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -41,19 +34,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
-import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 import com.example.mahnoorkhan.sarcasmania.Adapter.CardAdapter;
 import com.example.mahnoorkhan.sarcasmania.Adapter.profileAdapter;
 import com.example.mahnoorkhan.sarcasmania.Classes.FirebaseHelper;
@@ -73,16 +61,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.huxq17.swipecardsview.SwipeCardsView;
 
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.nio.BufferUnderflowException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements PostFragment.postInterface, NewfeedFragment.newsFeedInterface, ProfileFragment.OnFragmentInteractionListener, NewfeedFragment.OnFragmentInteractionListener, PostFragment.OnFragmentInteractionListener, ProfileFragment.profileInterface {
 
@@ -279,12 +264,10 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
         swipeCardsView.setCardsSlideListener(new SwipeCardsView.CardsSlideListener() {
             @Override
             public void onShow(int index) {
-                Random rand = new Random();
             }
 
             @Override
             public void onCardVanish(int index, SwipeCardsView.SlideType type) {
-                Random rand = new Random();
             }
 
             @Override
@@ -296,6 +279,10 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
         //------------------------ marking humorous ------------------------------------------
         humorous = (ImageView) findViewById(R.id.imageView7);
 
+        TextView tweetid = swipeCardsView.findViewById(R.id.tweetid);
+
+        final Context c = this;
+
         humorous.setClickable(true);
         humorous.setOnClickListener(v -> {
 
@@ -305,11 +292,45 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
             Drawable drawable2 = getDrawable(R.mipmap.heart_purple);
             Bitmap heartPurple = ((BitmapDrawable) drawable2).getBitmap();
 
-            if(bitmap.sameAs(heartPurple)) {
+            if (bitmap.sameAs(heartPurple)) {
                 humorous.setImageBitmap(heartGrey);
+                firebaseHelper.humorFeed(0, usernameFromLogin, Integer.parseInt(tweetid.getText().toString()));
+                RequestQueue queue = Volley.newRequestQueue(this);
+                TextView text = swipeCardsView.findViewById(R.id.theTweet);
+                String url = "https://humor-feedback.herokuapp.com/api/sarcasmania?text=" + text.getText().toString() + "&label=0";
+                JsonObjectRequest stringRequest = new JsonObjectRequest(url, null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Toast.makeText(c, "Thank you for your feedback.", Toast.LENGTH_LONG).show();
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(c, "Sorry! That didn't work, Please try again.", Toast.LENGTH_LONG).show();
+                    }
+                });
+                queue.add(stringRequest);
             }
-            if(bitmap.sameAs(heartGrey)) {
+            if (bitmap.sameAs(heartGrey)) {
                 humorous.setImageBitmap(heartPurple);
+                firebaseHelper.humorFeed(1, usernameFromLogin, Integer.parseInt(tweetid.getText().toString()));
+                RequestQueue queue = Volley.newRequestQueue(this);
+                TextView text = swipeCardsView.findViewById(R.id.theTweet);
+                String url = "https://humor-feedback.herokuapp.com/api/sarcasmania?text=" + text.getText().toString() + "&label=1";
+                JsonObjectRequest stringRequest = new JsonObjectRequest(url, null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Toast.makeText(c, "Thank you for your feedback.", Toast.LENGTH_LONG).show();
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(c, "Sorry! That didn't work, Please try again.", Toast.LENGTH_LONG).show();
+                    }
+                });
+                queue.add(stringRequest);
             }
         });
 
@@ -325,11 +346,15 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
             Drawable drawable3 = getDrawable(R.mipmap.unheart_purple);
             Bitmap unheartPurple = ((BitmapDrawable) drawable3).getBitmap();
 
-            if(bitmap2.sameAs(unheartPurple)) {
+            if (bitmap2.sameAs(unheartPurple)) {
                 insulting.setImageBitmap(unheartGrey);
+                firebaseHelper.insultFeed(0, usernameFromLogin, Integer.parseInt(tweetid.getText().toString()));
+                Toast.makeText(c, "Thank you for your feedback.", Toast.LENGTH_LONG).show();
             }
-            if(bitmap2.sameAs(unheartGrey)) {
+            if (bitmap2.sameAs(unheartGrey)) {
                 insulting.setImageBitmap(unheartPurple);
+                firebaseHelper.insultFeed(1, usernameFromLogin, Integer.parseInt(tweetid.getText().toString()));
+                Toast.makeText(c, "Thank you for your feedback.", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -402,35 +427,35 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
 
     @Override
     public void setImage() {
-        final ImageView v=(ImageView)findViewById(R.id.profilePicture);
-        final TextView t = (TextView) findViewById(R.id.profileUsername);
-        databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
-            User u;
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot dsp : dataSnapshot.getChildren()) {
-                    u = dsp.getValue(User.class);
-                    if(u != null) {
-                        if (u.getUsername().equals(t.getText().toString())) {
-                            String pic = u.getPicture();
-                            if(pic != null) {
-                                byte outImage[] = Base64.decode(pic, Base64.DEFAULT);
-                                ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
-                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
-                                Bitmap theImage = BitmapFactory.decodeStream(imageStream);
-                                theImage.compress(Bitmap.CompressFormat.PNG, 50, stream);
-                                v.setImageBitmap(theImage);
-                            }
-                        }
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        final ImageView v=(ImageView)findViewById(R.id.profilePicture);
+//        final TextView t = (TextView) findViewById(R.id.profileUsername);
+//        databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+//            User u;
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+//                    u = dsp.getValue(User.class);
+//                    if(u != null) {
+//                        if (u.getUsername().equals(t.getText().toString())) {
+//                            String pic = u.getPicture();
+//                            if(pic != null) {
+//                                byte outImage[] = Base64.decode(pic, Base64.DEFAULT);
+//                                ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
+//                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//
+//                                Bitmap theImage = BitmapFactory.decodeStream(imageStream);
+//                                theImage.compress(Bitmap.CompressFormat.PNG, 50, stream);
+//                                v.setImageBitmap(theImage);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
     @Override
@@ -465,6 +490,14 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                                 int sarcasm = jsonObject.optInt("Sarcasm");
                                 int insult = jsonObject.optInt("Insult");
 
+                                if(insult >= 51 && insult <= 100) {
+                                    insult = 1;
+                                }
+                                else if (insult >= 0 && insult <=50) {
+                                    insult = 0;
+                                }
+                                final int finalInsult = insult;
+
                                 RequestQueue humorScore = Volley.newRequestQueue(c);
                                 String url2 = "https://humor-score.herokuapp.com/api/sarcasmania?text=" + text;
                                 JsonObjectRequest humorRequest = new JsonObjectRequest(url2, null,
@@ -488,13 +521,14 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                                                             }
                                                         }
                                                     }
-                                                    firebaseHelper.newPost(count+1,text,usernameFromLogin,sarcasm,humor,insult,dateAndTime);
+                                                    firebaseHelper.newPost(count+1,text,usernameFromLogin,sarcasm,humor,finalInsult,dateAndTime);
                                                     progressDialog.dismiss();
+                                                    Toast.makeText(c, "Posted Successfully!", Toast.LENGTH_LONG).show();
                                                 }
 
                                                 @Override
                                                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                                    Toast.makeText(c,"Sorry that didn't work (Firebase)",Toast.LENGTH_LONG).show();
                                                 }
                                             });
                                         }
@@ -502,7 +536,7 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                                 @Override
                                 public void onErrorResponse(VolleyError volleyError) {
                                     progressDialog.dismiss();
-                                    newPost.setText(volleyError.getMessage());
+                                    Toast.makeText(c,"Sorry that didn't work (Humor)",Toast.LENGTH_LONG).show();
                                 }});
                                 humorScore.add(humorRequest);
                             }
@@ -510,7 +544,7 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
                         progressDialog.dismiss();
-                        newPost.setText(volleyError.getMessage());
+                        Toast.makeText(c,"Sorry that didn't work (Sarcasm+Insult)",Toast.LENGTH_LONG).show();
                     }});
                     sarcasm_insult.add(sarcasmAndInsult);
                 }
@@ -531,5 +565,4 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
             return false;
         }
     }
-
 }

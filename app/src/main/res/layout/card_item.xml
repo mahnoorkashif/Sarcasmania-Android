@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardView"
     android:layout_width="wrap_content"
-    android:layout_height="370dp"
+    android:layout_height="380dp"
     android:layout_gravity="center_horizontal"
     android:layout_marginStart="8dp"
     android:layout_marginLeft="30dp"
@@ -58,6 +58,29 @@
             android:textStyle="bold" />
 
 
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="@style/Widget.AppCompat.RatingBar.Indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:progressTint="@color/ratingbarcolor"
+            android:stepSize="1"/>
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Sarcasm"
+            android:textColor="@color/statusBarColor"
+            android:textStyle="bold"/>
+
         <TextView
             android:id="@+id/time"
             android:layout_width="match_parent"
@@ -70,6 +93,13 @@
             android:textAlignment="gravity"
             android:textColor="@color/hintcolor"
             android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tweetid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:visibility="gone" />
 
     </LinearLayout>
 

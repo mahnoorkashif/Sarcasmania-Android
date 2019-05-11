@@ -57,47 +57,20 @@ public class CardAdapter extends BaseCardAdapter {
 
         TextView tweet = (TextView) cardview.findViewById(R.id.theTweet);
         TextView userName = (TextView) cardview.findViewById(R.id.theUsername);
-        //RatingBar sarcasmRating = (RatingBar) cardview.findViewById(R.id.ratingBar);
-        //CrystalRangeSeekbar crystalRangeSeekbar = (CrystalRangeSeekbar) cardview.findViewById(R.id.rangeSeekbar1);
+        TextView tweetid = (TextView) cardview.findViewById(R.id.tweetid);
+        RatingBar sarcasmRating = (RatingBar) cardview.findViewById(R.id.ratingBar);
         //TextView humor = (TextView) cardview.findViewById(R.id.textView4);
         //TextView insult = (TextView) cardview.findViewById(R.id.textView3);
         TextView timeStamp = (TextView) cardview.findViewById(R.id.time) ;
 
         float humorValue = post.getHumor();
         float insultValue = post.getInsult();
-        Drawable drawable1 = context.getResources().getDrawable(R.mipmap.thumbend);
-        final Bitmap chandler = ((BitmapDrawable) drawable1).getBitmap();
-        Drawable drawable2 = context.getResources().getDrawable(R.mipmap.thumbstart);
-        final Bitmap purpledot = ((BitmapDrawable) drawable2).getBitmap();
 
+        tweetid.setText(Integer.toString(post.getTweetID()));
         tweet.setText(post.getTweet());
         userName.setText(post.getUsername());
         timeStamp.setText(post.getTime());
         float postSarcasmRating = post.getSarcasm()/20;
-        /*sarcasmRating.setRating((float)(Math.round(postSarcasmRating*100.0)/100.0));
-        if(humorValue > insultValue) {
-            crystalRangeSeekbar.setMinStartValue(0);
-            crystalRangeSeekbar.setMaxStartValue(humorValue*10);
-            crystalRangeSeekbar.setLeftThumbBitmap(purpledot);
-            crystalRangeSeekbar.setRightThumbBitmap(chandler);
-        }
-        if(insultValue > humorValue) {
-            crystalRangeSeekbar.setMinStartValue(insultValue*-10);
-            crystalRangeSeekbar.setMaxStartValue(0);
-            crystalRangeSeekbar.setRightThumbBitmap(purpledot);
-            crystalRangeSeekbar.setLeftThumbBitmap(chandler);
-        }
-        if(humorValue == insultValue) {
-            crystalRangeSeekbar.setMinStartValue(0);
-            crystalRangeSeekbar.setMaxStartValue(0);
-            crystalRangeSeekbar.setLeftThumbBitmap(chandler);
-            crystalRangeSeekbar.setRightThumbBitmap(chandler);
-        }
-        humor.setText("\tHumor: " + humorValue*100 + "%");
-        insult.setText("\tInsult: " + insultValue*100 + "%");
-
-        crystalRangeSeekbar.setEnabled(false);
-        crystalRangeSeekbar.apply();
-        */
+        sarcasmRating.setRating((float)(Math.round(postSarcasmRating*100.0)/100.0));
     }
 }

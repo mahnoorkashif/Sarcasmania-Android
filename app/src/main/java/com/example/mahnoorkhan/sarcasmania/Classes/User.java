@@ -9,16 +9,18 @@ public class User implements Serializable {
     private String email;
     private String password;
     private String picture;
+    private String type;
 
     public User() {
     }
 
-    public User(String username, String fullname, String email, String password, String picture) {
+    public User(String username, String fullname, String email, String password, String picture, String type) {
         this.username = username;
         this.fullname = fullname;
         this.email = email;
         this.password = password;
         this.picture = picture;
+        this.type = type;
     }
 
     public String getUsername() {
@@ -59,5 +61,13 @@ public class User implements Serializable {
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
