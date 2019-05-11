@@ -3,6 +3,7 @@ package com.example.mahnoorkhan.sarcasmania.Classes;
 import java.io.Serializable;
 
 public class User implements Serializable {
+
     private String username; //unique
     private String fullname;
     private String email;

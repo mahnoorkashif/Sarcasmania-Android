@@ -28,6 +28,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -76,6 +77,7 @@ import org.w3c.dom.Text;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.nio.BufferUnderflowException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -100,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
     private TextView profileUsername;
     private DatabaseReference databaseReference;
     private FirebaseHelper firebaseHelper;
-    private RatingBar ratingBar;
     private TextView sarcasmScale;
     private int num;
     private Button createPost;
@@ -207,7 +208,6 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
 
     }
 
-
     @Override
     public void onBackPressed() {
         if (tabIdHistory.size() > 0)
@@ -232,8 +232,6 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
         }
     }
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     }
@@ -241,7 +239,6 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
     @Override
     public void onFragmentInteraction(Uri uri) {
     }
-
 
     @Override
     public void setNewsFeed() {
@@ -279,47 +276,15 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
             runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Network not available. Turn on WIFI/4G/3G", Toast.LENGTH_LONG).show());
         }
 
-        //--------------------------------- rating sarcasm --------------------------------------
-//        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-//        sarcasmScale = (TextView) findViewById(R.id.textView5);
-//        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-//
-//            @Override
-//            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-//                sarcasmScale.setVisibility(View.VISIBLE);
-//                sarcasmScale.setText(String.valueOf(rating));
-//                switch ((int) ratingBar.getRating()) {
-//                    case 1:
-//                        sarcasmScale.setText("Very bad Sarcasm");
-//                        break;
-//                    case 2:
-//                        sarcasmScale.setText("So so hai");
-//                        break;
-//                    case 3:
-//                        sarcasmScale.setText("You getting there bro!");
-//                        break;
-//                    case 4:
-//                        sarcasmScale.setText("Great Sarcasm");
-//                        break;
-//                    case 5:
-//                        sarcasmScale.setText("Oo Burnnn!");
-//                        break;
-//                    default:
-//                        sarcasmScale.setText("");
-//                }
-//            }
-//        });
-
         swipeCardsView.setCardsSlideListener(new SwipeCardsView.CardsSlideListener() {
             @Override
             public void onShow(int index) {
-
+                Random rand = new Random();
             }
 
             @Override
             public void onCardVanish(int index, SwipeCardsView.SlideType type) {
-                ratingBar.setRating(0);
-                sarcasmScale.setVisibility(View.GONE);
+                Random rand = new Random();
             }
 
             @Override
@@ -328,52 +293,43 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
             }
         });
 
-//        linearLayout = (LinearLayout) findViewById(R.id.ratebuttons);
-//        linearLayout.bringToFront();
-
         //------------------------ marking humorous ------------------------------------------
         humorous = (ImageView) findViewById(R.id.imageView7);
-//        linearLayout.bringChildToFront(humorous);
-        final Bitmap bitmap = ((BitmapDrawable) humorous.getDrawable()).getBitmap();
 
-        Drawable drawable = getDrawable(R.mipmap.heart_grey);
-        Bitmap heartGrey = ((BitmapDrawable) drawable).getBitmap();
-        Drawable drawable2 = getDrawable(R.mipmap.heart_purple);
-        final Bitmap heartPurple = ((BitmapDrawable) drawable2).getBitmap();
-
-        humorous.bringToFront();
         humorous.setClickable(true);
         humorous.setOnClickListener(v -> {
-            runOnUiThread(() -> Toast.makeText(getApplicationContext(),"on click only",Toast.LENGTH_LONG).show());
-            if(bitmap.sameAs(heartGrey)) {
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(),"BHAI HELLO CARDS KHATAM",Toast.LENGTH_LONG).show());
-                humorous.setImageBitmap(heartPurple);
-            }
+
+            final Bitmap bitmap = ((BitmapDrawable) humorous.getDrawable()).getBitmap();
+            Drawable drawable = getDrawable(R.mipmap.heart_grey);
+            Bitmap heartGrey = ((BitmapDrawable) drawable).getBitmap();
+            Drawable drawable2 = getDrawable(R.mipmap.heart_purple);
+            Bitmap heartPurple = ((BitmapDrawable) drawable2).getBitmap();
 
             if(bitmap.sameAs(heartPurple)) {
                 humorous.setImageBitmap(heartGrey);
             }
+            if(bitmap.sameAs(heartGrey)) {
+                humorous.setImageBitmap(heartPurple);
+            }
         });
 
         //------------------------ marking insulting ------------------------------------------
-        insulting = (ImageView) findViewById(R.id.imageView7);
-//        linearLayout.bringChildToFront(insulting);
-        final Bitmap bitmap2 = ((BitmapDrawable) humorous.getDrawable()).getBitmap();
+        insulting = (ImageView) findViewById(R.id.imageView6);
 
-        Drawable drawable1 = getDrawable(R.mipmap.unheart_grey);
-        Bitmap unheartGrey = ((BitmapDrawable) drawable1).getBitmap();
-        Drawable drawable3 = getDrawable(R.mipmap.unheart_purple);
-        final Bitmap unheartPurple = ((BitmapDrawable) drawable3).getBitmap();
-
-        insulting.bringToFront();
         insulting.setClickable(true);
         insulting.setOnClickListener(v -> {
-            if(bitmap2.sameAs(unheartGrey)) {
-                humorous.setImageBitmap(unheartPurple);
-            }
 
-            if(bitmap.sameAs(unheartPurple)) {
-                humorous.setImageBitmap(unheartGrey);
+            final Bitmap bitmap2 = ((BitmapDrawable) insulting.getDrawable()).getBitmap();
+            Drawable drawable1 = getDrawable(R.mipmap.unheart_grey);
+            Bitmap unheartGrey = ((BitmapDrawable) drawable1).getBitmap();
+            Drawable drawable3 = getDrawable(R.mipmap.unheart_purple);
+            Bitmap unheartPurple = ((BitmapDrawable) drawable3).getBitmap();
+
+            if(bitmap2.sameAs(unheartPurple)) {
+                insulting.setImageBitmap(unheartGrey);
+            }
+            if(bitmap2.sameAs(unheartGrey)) {
+                insulting.setImageBitmap(unheartPurple);
             }
         });
     }
@@ -470,7 +426,6 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                     }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -485,7 +440,6 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
         newPost = (EditText) findViewById(R.id.post_text);
         postUsername.setText(usernameFromLogin);
 
-
         final Context c = this;
 
         createPost.setOnClickListener(new View.OnClickListener() {
@@ -494,85 +448,75 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                 final ProgressDialog progressDialog = ProgressDialog.show(c, "Calculating Scores...", "Please wait...", true);
                 String text = newPost.getText().toString();
                 if(text.length() <= 0 || text.isEmpty()) {
+                    progressDialog.dismiss();
                     Toast.makeText(c,"You don't seem to be Sarcastic AT ALL! Type Something",Toast.LENGTH_LONG).show();
                 }
-                if(text.length() <= 250) {
-                    RequestQueue queue = Volley.newRequestQueue(c);
-                    String url ="https://sarcasmania-api.herokuapp.com/api/sarcasmania?text="+text;
-                    JsonObjectRequest stringRequest = new JsonObjectRequest(url, null,
-                            new Response.Listener<JSONObject>() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    int humors = response.optInt("Humor");
-                                    int insults = response.optInt("Insult");
-                                    int sarcasms = response.optInt("Sarcasm");
-                                    //newPost.setText(humor+"");
-                                    Calendar calendar = Calendar.getInstance();
-                                    SimpleDateFormat mdformat = new SimpleDateFormat("EEEE h:mm a");
-                                    String dateAndTime = mdformat.format(calendar.getTime());
-                                    databaseReference.child("Posts").addListenerForSingleValueEvent(new ValueEventListener() {
-                                        Post post;
-                                        int count;
+                if(text.split("\\s+").length < 4) {
+                    progressDialog.dismiss();
+                    Toast.makeText(c,"Sentence should have atleast 4 words! :)",Toast.LENGTH_LONG).show();
+                }
+                else {
+                    RequestQueue sarcasm_insult = Volley.newRequestQueue(c);
+                    String url1 = "https://sarcasmania-api.herokuapp.com/api/sarcasmania?text=" + text;
+                    JsonObjectRequest sarcasmAndInsult = new JsonObjectRequest(url1, null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject jsonObject) {
+                                int sarcasm = jsonObject.optInt("Sarcasm");
+                                int insult = jsonObject.optInt("Insult");
+
+                                RequestQueue humorScore = Volley.newRequestQueue(c);
+                                String url2 = "https://humor-score.herokuapp.com/api/sarcasmania?text=" + text;
+                                JsonObjectRequest humorRequest = new JsonObjectRequest(url2, null,
+                                    new Response.Listener<JSONObject>() {
                                         @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            for (DataSnapshot dsp : dataSnapshot.getChildren()) {
-                                                if(dsp != null) {
-                                                    post = dsp.getValue(Post.class);
-                                                    if(post != null) {
-                                                        count = post.getTweetID();
-                                                    }
-                                                }
-                                            }
-                                            firebaseHelper.newPost(count+1,text,usernameFromLogin,sarcasms,humors,insults,dateAndTime);
-                                            progressDialog.dismiss();
-                                            final Dialog dialog = new Dialog(c);
-                                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                            dialog.setContentView(R.layout.profilepostinfo);
-                                            TextView timee = (TextView) dialog.findViewById(R.id.timesss);
-                                            TextView posts = (TextView) dialog.findViewById(R.id.textt);
-                                            RatingBar sarcasmRating = (RatingBar) dialog.findViewById(R.id.ratingBar2) ;
-
-                                            timee.setText(dateAndTime);
-                                            posts.setText(text);
-
-                                            float postSarcasmRating = sarcasms/20;
-                                            sarcasmRating.setRating((float)(Math.round(postSarcasmRating*100.0)/100.0));
-
-                                            TextView humor = (TextView) dialog.findViewById(R.id.humors);
-                                            TextView insult = (TextView) dialog.findViewById(R.id.insults);
-
-                                            humor.setText("\tHumor: " + humors);
-                                            insult.setText("\tInsult: " + insults);
-//                                            newPost.setText(humor+" "+insult+" "+sarcasm);
-
-                                            dialog.setCancelable(true);
-                                            dialog.show();
-
-                                            dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                        public void onResponse(JSONObject jsonObject) {
+                                            int humor = jsonObject.optInt("Humor");
+                                            Calendar calendar = Calendar.getInstance();
+                                            SimpleDateFormat mdformat = new SimpleDateFormat("EEEE h:mm a");
+                                            String dateAndTime = mdformat.format(calendar.getTime());
+                                            databaseReference.child("Posts").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                Post post;
+                                                int count = 0;
                                                 @Override
-                                                public void onCancel(DialogInterface dialog) {
-                                                    newPost.setText("");
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                    for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                                                        if(dsp != null) {
+                                                            post = dsp.getValue(Post.class);
+                                                            if(post != null) {
+                                                                count = post.getTweetID();
+                                                            }
+                                                        }
+                                                    }
+                                                    firebaseHelper.newPost(count+1,text,usernameFromLogin,sarcasm,humor,insult,dateAndTime);
+                                                    progressDialog.dismiss();
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
                                                 }
                                             });
                                         }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                                        }
-                                    });
-
-                                }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            progressDialog.dismiss();
-                            newPost.setText("That didn't work!");
-                        }
-                    });
-                    queue.add(stringRequest);
+                                    }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError volleyError) {
+                                    progressDialog.dismiss();
+                                    newPost.setText(volleyError.getMessage());
+                                }});
+                                humorScore.add(humorRequest);
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        progressDialog.dismiss();
+                        newPost.setText(volleyError.getMessage());
+                    }});
+                    sarcasm_insult.add(sarcasmAndInsult);
                 }
             }
         });
+
     }
 
     public static boolean isNetworkAvaliable(Context ctx) {
