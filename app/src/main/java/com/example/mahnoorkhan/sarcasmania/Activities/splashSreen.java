@@ -1,19 +1,33 @@
 package com.example.mahnoorkhan.sarcasmania.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.mahnoorkhan.sarcasmania.Classes.FirebaseHelper;
+import com.example.mahnoorkhan.sarcasmania.Classes.User;
 import com.example.mahnoorkhan.sarcasmania.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -60,25 +74,55 @@ public class splashSreen extends AppCompatActivity {
         Animation animation1 = AnimationUtils.loadAnimation(this, R.anim.fadein);
         imageView1.startAnimation(animation1); //Set animation to your ImageView
 
+        final Context c = this;
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
         Thread myThread = new Thread() {
             @Override
             public void run() {
-                try {
-                    sleep(5000);
-                    Intent i = new Intent(getApplicationContext(),signup.class);
-                    startActivity(i);
-                    finish();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            try {
+                final SharedPreferences mSharedPreference= PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                String email = (mSharedPreference.getString("email",null));
+                String password = (mSharedPreference.getString("password",null));
+                String username = (mSharedPreference.getString("username",null));
+                String type = (mSharedPreference.getString("type",null));
+                sleep(5000);
+                if(email != null && password != null && username != null && type != null) {
+                    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                    firebaseAuth.signInWithEmailAndPassword(email,password)
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(task.isSuccessful()) {
+                                    Intent i = new Intent(c,MainActivity.class);
+                                    i.putExtra("usernamefromlogin",username);
+                                    i.putExtra("usertype",type);
+                                    startActivity(i);
+                                    finish();
+                                } else {
+                                    Log.d("Error: ",task.getException().getMessage());
+                                    runOnUiThread(() -> Toast.makeText(c, task.getException().getMessage(), Toast.LENGTH_LONG).show());
+                                }
+                            }
+                        });
 
+//                        Intent i = new Intent(c,MainActivity.class);
+//                        i.putExtra("usernamefromlogin",username);
+//                        i.putExtra("usertype",type);
+//                        startActivity(i);
+//                        finish();
                 }
+                else {
+                    Intent i = new Intent(getApplicationContext(), signup.class);
+                    startActivity(i);
+                }
+                finish();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+
+            }
             }
         };
         myThread.start();
-
-
-
     }
 }
 

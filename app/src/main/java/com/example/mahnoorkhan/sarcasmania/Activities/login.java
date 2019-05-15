@@ -1,10 +1,13 @@
 package com.example.mahnoorkhan.sarcasmania.Activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +16,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mahnoorkhan.sarcasmania.Classes.User;
@@ -34,6 +38,7 @@ public class login extends AppCompatActivity {
     EditText password;
     FirebaseAuth firebaseAuth;
     DatabaseReference databaseReference;
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,16 @@ public class login extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference();
         email = (EditText) findViewById(R.id.loginEmail);
         password = (EditText) findViewById(R.id.loginPassword);
+        textView = (TextView) findViewById(R.id.textView5);
+
+
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(),signup.class);
+                startActivity(i);
+            }
+        });
     }
 
     public void onClick(View v) {
@@ -67,6 +82,7 @@ public class login extends AppCompatActivity {
             password.setError("Password cannot be Empty");
             return;
         }
+        final Context c = this;
         final ProgressDialog progressDialog = ProgressDialog.show(this, "Logging in...", "Please wait...", true);
         firebaseAuth.signInWithEmailAndPassword(email.getText().toString(),password.getText().toString())
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -84,9 +100,18 @@ public class login extends AppCompatActivity {
                                     if(user != null) {
                                         if(user.getEmail().equals(email.getText().toString())) {
                                             databaseReference.removeEventListener(this);
+                                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+                                            SharedPreferences.Editor editor = prefs.edit();
+                                            editor.putString("email", email.getText().toString());
+                                            editor.putString("password", password.getText().toString());
+                                            editor.putString("username", user.getUsername());
+                                            editor.putString("type",user.getType());
+                                            editor.commit();
                                             Intent i = new Intent(login.this,MainActivity.class);
                                             i.putExtra("usernamefromlogin",user.getUsername());
+                                            i.putExtra("usertype",user.getType());
                                             startActivity(i);
+                                            finish();
                                         }
                                     }
                                 }

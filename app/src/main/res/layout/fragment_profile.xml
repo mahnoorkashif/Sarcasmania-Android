@@ -27,29 +27,16 @@
             android:weightSum="5"
             android:background="@drawable/border">
 
-            <ImageView
-                android:id="@+id/profilePicture"
-                android:layout_width="40dp"
-                android:layout_height="70dp"
+            <TextView
+                android:id="@+id/profileUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:background="@drawable/bg_profile_avatar"
-                android:paddingLeft="5dp"
-                android:paddingTop="10dp"
-                android:paddingRight="5dp"
-                android:paddingBottom="10dp"
-                android:src="@mipmap/profile_purple" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:layout_gravity="center"
-                android:layout_weight="4"
                 android:padding="12sp"
                 android:textColor="@color/statusBarColor"
                 android:textSize="22dp"
-                android:id="@+id/profileUsername"/>
+                android:textStyle="bold" />
 
         </LinearLayout>
 

@@ -35,4 +35,9 @@ public class FirebaseHelper {
         insultFeedback insultFeedback = new insultFeedback(insult, username, tweetID);
         databaseReference.child("InsultFeedback").child(tweetID + "-" + username).setValue(insultFeedback);
     }
+
+    public void newReport(int tweetid, String tweet, String username) {
+        report report = new report(tweetid, tweet, username);
+        databaseReference.child("ReportedTweets").child(Integer.toString(tweetid)).setValue(report);
+    }
 }

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
+import com.example.mahnoorkhan.sarcasmania.Classes.FirebaseHelper;
 import com.example.mahnoorkhan.sarcasmania.Classes.Post;
 import com.example.mahnoorkhan.sarcasmania.R;
 import com.huxq17.swipecardsview.BaseCardAdapter;
@@ -48,6 +49,8 @@ public class CardAdapter extends BaseCardAdapter {
         cardview.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                FirebaseHelper firebaseHelper = new FirebaseHelper();
+                firebaseHelper.newReport(modelList.get(position).getTweetID(),modelList.get(position).getTweet(),modelList.get(position).getUsername());
                 Toast.makeText(context,"Tweet Reported",Toast.LENGTH_LONG).show();
                 return true;
             }
@@ -59,12 +62,36 @@ public class CardAdapter extends BaseCardAdapter {
         TextView userName = (TextView) cardview.findViewById(R.id.theUsername);
         TextView tweetid = (TextView) cardview.findViewById(R.id.tweetid);
         RatingBar sarcasmRating = (RatingBar) cardview.findViewById(R.id.ratingBar);
-        //TextView humor = (TextView) cardview.findViewById(R.id.textView4);
-        //TextView insult = (TextView) cardview.findViewById(R.id.textView3);
+        ImageView humor = (ImageView) cardview.findViewById(R.id.imageView4);
+        ImageView insult = (ImageView) cardview.findViewById(R.id.imageView3);
         TextView timeStamp = (TextView) cardview.findViewById(R.id.time) ;
 
-        float humorValue = post.getHumor();
-        float insultValue = post.getInsult();
+
+        Drawable drawable = context.getDrawable(R.mipmap.heart_grey);
+        Bitmap heartGrey = ((BitmapDrawable) drawable).getBitmap();
+        Drawable drawable2 = context.getDrawable(R.mipmap.heart_purple);
+        Bitmap heartPurple = ((BitmapDrawable) drawable2).getBitmap();
+
+        Drawable drawable1 = context.getDrawable(R.mipmap.unheart_grey);
+        Bitmap unheartGrey = ((BitmapDrawable) drawable1).getBitmap();
+        Drawable drawable3 = context.getDrawable(R.mipmap.unheart_purple);
+        Bitmap unheartPurple = ((BitmapDrawable) drawable3).getBitmap();
+
+        int humorValue = post.getHumor();
+        int insultValue = post.getInsult();
+
+        if(humorValue == 0) {
+            humor.setImageBitmap(heartGrey);
+        }
+        if(humorValue == 1) {
+            humor.setImageBitmap(heartPurple);
+        }
+        if(insultValue == 0) {
+            insult.setImageBitmap(unheartGrey);
+        }
+        if(insultValue == 1) {
+            insult.setImageBitmap(unheartPurple);
+        }
 
         tweetid.setText(Integer.toString(post.getTweetID()));
         tweet.setText(post.getTweet());

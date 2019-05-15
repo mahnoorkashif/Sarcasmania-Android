@@ -1,8 +1,10 @@
 package com.example.mahnoorkhan.sarcasmania.Activities;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +15,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -34,6 +37,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,14 +49,18 @@ import com.android.volley.toolbox.Volley;
 import com.example.mahnoorkhan.sarcasmania.Adapter.CardAdapter;
 import com.example.mahnoorkhan.sarcasmania.Adapter.profileAdapter;
 import com.example.mahnoorkhan.sarcasmania.Classes.FirebaseHelper;
-import com.example.mahnoorkhan.sarcasmania.Classes.User;
+import com.example.mahnoorkhan.sarcasmania.Classes.humorFeedback;
+import com.example.mahnoorkhan.sarcasmania.Classes.insultFeedback;
+import com.example.mahnoorkhan.sarcasmania.Classes.report;
 import com.example.mahnoorkhan.sarcasmania.Fragment.NewfeedFragment;
 import com.example.mahnoorkhan.sarcasmania.Fragment.PostFragment;
 import com.example.mahnoorkhan.sarcasmania.Fragment.ProfileFragment;
 import com.example.mahnoorkhan.sarcasmania.Adapter.MainActivityPagerAdapter;
 import com.example.mahnoorkhan.sarcasmania.Classes.Post;
+import com.example.mahnoorkhan.sarcasmania.Fragment.reportedtweets;
 import com.example.mahnoorkhan.sarcasmania.R;
 import com.example.mahnoorkhan.sarcasmania.Classes.swipeOffViewPager;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -69,7 +77,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements PostFragment.postInterface, NewfeedFragment.newsFeedInterface, ProfileFragment.OnFragmentInteractionListener, NewfeedFragment.OnFragmentInteractionListener, PostFragment.OnFragmentInteractionListener, ProfileFragment.profileInterface {
+public class MainActivity extends AppCompatActivity implements PostFragment.postInterface, NewfeedFragment.newsFeedInterface, ProfileFragment.OnFragmentInteractionListener, reportedtweets.OnFragmentInteractionListener, NewfeedFragment.OnFragmentInteractionListener, PostFragment.OnFragmentInteractionListener, ProfileFragment.profileInterface {
 
     private TabLayout tabLayout;
     private com.example.mahnoorkhan.sarcasmania.Classes.swipeOffViewPager swipeOffViewPager;
@@ -81,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
     private SwipeCardsView swipeCardsView;
     private List<Post> modelList;
     private ArrayList<Post> modelList2;
+    private ArrayList<report> modelList3;
     private Boolean check;
     private String usernameFromLogin;
     private TextView postUsername;
@@ -93,7 +102,8 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
     private EditText newPost;
     private ImageView humorous;
     private ImageView insulting;
-    private LinearLayout linearLayout;
+    private TabLayout.Tab reportedtweets;
+    private String usertype;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +111,8 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);     //  Fixed Portrait orientation
         setContentView(R.layout.activity_main);
         setTitle("NewsFeed");
+
+
 
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,14 +133,21 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
         home = tabLayout.newTab().setIcon(R.mipmap.home_purple);
         upload = tabLayout.newTab().setIcon(R.mipmap.newpost_grey);
         profile = tabLayout.newTab().setIcon(R.mipmap.profile_grey);
+        reportedtweets = tabLayout.newTab().setText("RT");
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.hintcolor));
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        usertype = getIntent().getExtras().getString("usertype");
+
         tabLayout.addTab(home);
         tabLayout.addTab(upload);
         tabLayout.addTab(profile);
+
+        if(usertype.length() > 0 && usertype.equals("admin")) {
+            tabLayout.addTab(reportedtweets);
+        }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         tabIdHistory.add(home);
@@ -173,6 +192,14 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                         tabIdHistory.add(tab);
                         setTitle("Profile");
                         break;
+                    case 3:
+                        home.setIcon(R.mipmap.home_grey);
+                        upload.setIcon(R.mipmap.newpost_grey);
+                        profile.setIcon(R.mipmap.profile_grey);
+                        tabIdHistory.remove(tab);
+                        tabIdHistory.add(tab);
+                        setTitle("Reported Tweets");
+                        break;
                 }
             }
             @Override
@@ -189,8 +216,6 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
         databaseReference = FirebaseDatabase.getInstance().getReference();
         firebaseHelper = new FirebaseHelper();
         usernameFromLogin = getIntent().getExtras().getString("usernamefromlogin");
-
-        num = 1;
 
     }
 
@@ -227,15 +252,54 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
     }
 
     @Override
+    public void setRT() {
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv2);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+
+        modelList3 = new ArrayList<report>();
+        databaseReference.child("ReportedTweets").addValueEventListener(new ValueEventListener() {
+            report report;
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                    if(dsp != null) {
+                        report = dsp.getValue(report.class);
+                        if(report != null) {
+                            modelList3.add(0, report);
+                        }
+                    }
+                }
+                profileAdapter profileAdapter = new profileAdapter(MainActivity.this,2,modelList3);
+                recyclerView.setAdapter(profileAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
     public void setNewsFeed() {
         final Context c = this;
         //------------------------------- get swipe cards view----------------------------------------
+        humorous = (ImageView) findViewById(R.id.imageView7);
+        insulting = (ImageView) findViewById(R.id.imageView6);
+        num = 1;
         swipeCardsView = (SwipeCardsView)findViewById(R.id.swipeCardsView);
-        swipeCardsView.retainLastCard(false);
+        swipeCardsView.retainLastCard(true);
         swipeCardsView.enableSwipe(true);
         check = false;
         modelList = new ArrayList<Post>();
         if(isNetworkAvaliable(this)) {
+            final ProgressDialog progressDialog = ProgressDialog.show(this, "Loading Newsfeed...", "Please wait...", true);
             databaseReference.child("Posts").addValueEventListener(new ValueEventListener() {
                 Post post;
                 @Override
@@ -250,15 +314,51 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                             }
                         }
                     }
+                    progressDialog.dismiss();
                     CardAdapter cardAdapter = new CardAdapter(modelList, getBaseContext());
                     swipeCardsView.setAdapter(cardAdapter);
 
                     if(num == 1) {
 
                         //------------------------ marking humorous ------------------------------------------
-                        humorous = (ImageView) findViewById(R.id.imageView7);
 
+                        humorous.setImageBitmap(((BitmapDrawable) getDrawable(R.mipmap.heart_grey)).getBitmap());
                         humorous.setClickable(true);
+
+                        databaseReference.child("HumorFeedback").addValueEventListener(new ValueEventListener() {
+                            humorFeedback humorFeedback;
+                            int humor;
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                                    if (dsp != null) {
+                                        humorFeedback = dsp.getValue(humorFeedback.class);
+                                        if(humorFeedback != null) {
+                                            if(humorFeedback.getTweetid() == modelList.get(0).getTweetID() && humorFeedback.getUsername().equals(usernameFromLogin)) {
+                                                humor = humorFeedback.getHumor();
+                                                Drawable drawable = getDrawable(R.mipmap.heart_grey);
+                                                Bitmap heartGrey = ((BitmapDrawable) drawable).getBitmap();
+                                                Drawable drawable2 = getDrawable(R.mipmap.heart_purple);
+                                                Bitmap heartPurple = ((BitmapDrawable) drawable2).getBitmap();
+                                                if (humor == 0) {
+                                                    humorous.setImageBitmap(heartGrey);
+                                                }
+                                                else if (humor == 1) {
+                                                    humorous.setImageBitmap(heartPurple);
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
                         humorous.setOnClickListener(v -> {
 
                             final Bitmap bitmap = ((BitmapDrawable) humorous.getDrawable()).getBitmap();
@@ -308,9 +408,44 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                         });
 
                         //------------------------ marking insulting ------------------------------------------
-                        insulting = (ImageView) findViewById(R.id.imageView6);
 
+                        insulting.setImageBitmap(((BitmapDrawable) getDrawable(R.mipmap.unheart_grey)).getBitmap());
                         insulting.setClickable(true);
+
+                        databaseReference.child("InsultFeedback").addValueEventListener(new ValueEventListener() {
+                            insultFeedback insultFeedback;
+                            int insult;
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                                    if (dsp != null) {
+                                        insultFeedback = dsp.getValue(insultFeedback.class);
+                                        if(insultFeedback != null) {
+                                            if(insultFeedback.getTweetid() == modelList.get(0).getTweetID() && insultFeedback.getUsername().equals(usernameFromLogin)) {
+                                                insult = insultFeedback.getInsult();
+                                                Drawable drawable1 = getDrawable(R.mipmap.unheart_grey);
+                                                Bitmap unheartGrey = ((BitmapDrawable) drawable1).getBitmap();
+                                                Drawable drawable3 = getDrawable(R.mipmap.unheart_purple);
+                                                Bitmap unheartPurple = ((BitmapDrawable) drawable3).getBitmap();
+                                                if (insult == 0) {
+                                                    insulting.setImageBitmap(unheartGrey);
+                                                }
+                                                else if (insult == 1) {
+                                                    insulting.setImageBitmap(unheartPurple);
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
                         insulting.setOnClickListener(v -> {
 
                             final Bitmap bitmap2 = ((BitmapDrawable) insulting.getDrawable()).getBitmap();
@@ -339,9 +474,43 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                             num++;
 
                             //------------------------ marking humorous ------------------------------------------
-                            humorous = (ImageView) findViewById(R.id.imageView7);
-
+                            humorous.setImageBitmap(((BitmapDrawable) getDrawable(R.mipmap.heart_grey)).getBitmap());
                             humorous.setClickable(true);
+
+                            databaseReference.child("HumorFeedback").addValueEventListener(new ValueEventListener() {
+                                humorFeedback humorFeedback;
+                                int humor;
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                                        if (dsp != null) {
+                                            humorFeedback = dsp.getValue(humorFeedback.class);
+                                            if(humorFeedback != null) {
+                                                if(humorFeedback.getTweetid() == modelList.get(index).getTweetID() && humorFeedback.getUsername().equals(usernameFromLogin)) {
+                                                    humor = humorFeedback.getHumor();
+                                                    Drawable drawable = getDrawable(R.mipmap.heart_grey);
+                                                    Bitmap heartGrey = ((BitmapDrawable) drawable).getBitmap();
+                                                    Drawable drawable2 = getDrawable(R.mipmap.heart_purple);
+                                                    Bitmap heartPurple = ((BitmapDrawable) drawable2).getBitmap();
+                                                    if (humor == 0) {
+                                                        humorous.setImageBitmap(heartGrey);
+                                                    }
+                                                    else if (humor == 1) {
+                                                        humorous.setImageBitmap(heartPurple);
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
                             humorous.setOnClickListener(v -> {
 
                                 final Bitmap bitmap = ((BitmapDrawable) humorous.getDrawable()).getBitmap();
@@ -391,9 +560,43 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                             });
 
                             //------------------------ marking insulting ------------------------------------------
-                            insulting = (ImageView) findViewById(R.id.imageView6);
-
+                            insulting.setImageBitmap(((BitmapDrawable) getDrawable(R.mipmap.unheart_grey)).getBitmap());
                             insulting.setClickable(true);
+
+                            databaseReference.child("InsultFeedback").addValueEventListener(new ValueEventListener() {
+                                insultFeedback insultFeedback;
+                                int insult;
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                                        if (dsp != null) {
+                                            insultFeedback = dsp.getValue(insultFeedback.class);
+                                            if(insultFeedback != null) {
+                                                if(insultFeedback.getTweetid() == modelList.get(index).getTweetID() && insultFeedback.getUsername().equals(usernameFromLogin)) {
+                                                    insult = insultFeedback.getInsult();
+                                                    Drawable drawable1 = getDrawable(R.mipmap.unheart_grey);
+                                                    Bitmap unheartGrey = ((BitmapDrawable) drawable1).getBitmap();
+                                                    Drawable drawable3 = getDrawable(R.mipmap.unheart_purple);
+                                                    Bitmap unheartPurple = ((BitmapDrawable) drawable3).getBitmap();
+                                                    if (insult == 0) {
+                                                        insulting.setImageBitmap(unheartGrey);
+                                                    }
+                                                    else if (insult == 1) {
+                                                        insulting.setImageBitmap(unheartPurple);
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
                             insulting.setOnClickListener(v -> {
 
                                 final Bitmap bitmap2 = ((BitmapDrawable) insulting.getDrawable()).getBitmap();
@@ -454,6 +657,21 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
             startActivity(intent);
             return true;
         }
+        else if(item.getItemId() == R.id.logout) {
+            Toast.makeText(this,"Logout",Toast.LENGTH_LONG).show();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("email", null);
+            editor.putString("password", null);
+            editor.putString("username", null);
+            editor.putString("type",null);
+            editor.commit();
+            FirebaseAuth.getInstance().signOut();
+            Intent i = new Intent(getApplicationContext(),signup.class);
+            startActivity(i);
+            finish();
+            return true;
+        }
         else {
             return super.onOptionsItemSelected(item);
         }
@@ -492,7 +710,7 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                         }
                     }
                 }
-                profileAdapter profileAdapter = new profileAdapter(MainActivity.this,modelList2);
+                profileAdapter profileAdapter = new profileAdapter(MainActivity.this,modelList2,1);
                 recyclerView.setAdapter(profileAdapter);
             }
 
@@ -501,39 +719,6 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
 
             }
         });
-    }
-
-    @Override
-    public void setImage() {
-//        final ImageView v=(ImageView)findViewById(R.id.profilePicture);
-//        final TextView t = (TextView) findViewById(R.id.profileUsername);
-//        databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
-//            User u;
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot dsp : dataSnapshot.getChildren()) {
-//                    u = dsp.getValue(User.class);
-//                    if(u != null) {
-//                        if (u.getUsername().equals(t.getText().toString())) {
-//                            String pic = u.getPicture();
-//                            if(pic != null) {
-//                                byte outImage[] = Base64.decode(pic, Base64.DEFAULT);
-//                                ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
-//                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//
-//                                Bitmap theImage = BitmapFactory.decodeStream(imageStream);
-//                                theImage.compress(Bitmap.CompressFormat.PNG, 50, stream);
-//                                v.setImageBitmap(theImage);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
     }
 
     @Override
@@ -566,58 +751,106 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                             @Override
                             public void onResponse(JSONObject jsonObject) {
                                 int sarcasm = jsonObject.optInt("Sarcasm");
-                                int insult = jsonObject.optInt("Insult");
+                                if (sarcasm > 50) {
+                                    int insult = jsonObject.optInt("Insult");
 
-                                if(insult >= 51 && insult <= 100) {
-                                    insult = 1;
-                                }
-                                else if (insult >= 0 && insult <=50) {
-                                    insult = 0;
-                                }
-                                final int finalInsult = insult;
+                                    if (insult >= 51 && insult <= 100) {
+                                        insult = 1;
+                                    } else if (insult >= 0 && insult <= 50) {
+                                        insult = 0;
+                                    }
+                                    final int finalInsult = insult;
 
-                                RequestQueue humorScore = Volley.newRequestQueue(c);
-//                                String url2 = "https://humor-score.herokuapp.com/api/sarcasmania?text=" + text;
-                                String url2 = "https://sarcasmania-test.herokuapp.com/api/sarcasmania?text=" + text;
-                                JsonObjectRequest humorRequest = new JsonObjectRequest(url2, null,
-                                    new Response.Listener<JSONObject>() {
-                                        @Override
-                                        public void onResponse(JSONObject jsonObject) {
-                                            int humor = jsonObject.optInt("Humor");
-                                            Calendar calendar = Calendar.getInstance();
-                                            SimpleDateFormat mdformat = new SimpleDateFormat("EEEE h:mm a");
-                                            String dateAndTime = mdformat.format(calendar.getTime());
-                                            databaseReference.child("Posts").addListenerForSingleValueEvent(new ValueEventListener() {
-                                                Post post;
-                                                int count = 0;
+                                    RequestQueue humorScore = Volley.newRequestQueue(c);
+                                    String url2 = "https://humor-score.herokuapp.com/api/sarcasmania?text=" + text;
+                                    JsonObjectRequest humorRequest = new JsonObjectRequest(url2, null,
+                                            new Response.Listener<JSONObject>() {
                                                 @Override
-                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                    for (DataSnapshot dsp : dataSnapshot.getChildren()) {
-                                                        if(dsp != null) {
-                                                            post = dsp.getValue(Post.class);
-                                                            if(post != null) {
-                                                                count = post.getTweetID();
+                                                public void onResponse(JSONObject jsonObject) {
+                                                    int humor = jsonObject.optInt("Humor");
+                                                    Calendar calendar = Calendar.getInstance();
+                                                    SimpleDateFormat mdformat = new SimpleDateFormat("EEEE h:mm a");
+                                                    String dateAndTime = mdformat.format(calendar.getTime());
+                                                    databaseReference.child("Posts").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        Post post;
+                                                        int count = 0;
+
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                            for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                                                                if (dsp != null) {
+                                                                    post = dsp.getValue(Post.class);
+                                                                    if (post != null) {
+                                                                        count = post.getTweetID();
+                                                                    }
+                                                                }
                                                             }
-                                                        }
-                                                    }
-                                                    firebaseHelper.newPost(count+1,text,usernameFromLogin,sarcasm,humor,finalInsult,dateAndTime);
-                                                    progressDialog.dismiss();
-                                                    Toast.makeText(c, "Posted Successfully!", Toast.LENGTH_LONG).show();
-                                                }
+                                                            firebaseHelper.newPost(count + 1, text, usernameFromLogin, sarcasm, humor, finalInsult, dateAndTime);
+                                                            progressDialog.dismiss();
 
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                                    Toast.makeText(c,"Sorry that didn't work (Firebase)",Toast.LENGTH_LONG).show();
+                                                            final Dialog dialog = new Dialog(c);
+                                                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                                            dialog.setContentView(R.layout.profilepostinfo);
+                                                            TextView timee = (TextView) dialog.findViewById(R.id.timesss);
+                                                            TextView posts = (TextView) dialog.findViewById(R.id.textt);
+                                                            RatingBar sarcasmRating = (RatingBar) dialog.findViewById(R.id.ratingBar2);
+
+                                                            timee.setText(dateAndTime);
+                                                            posts.setText(text);
+                                                            float postSarcasmRating = sarcasm / 20;
+                                                            sarcasmRating.setRating((float) (Math.round(postSarcasmRating * 100.0) / 100.0));
+
+                                                            int humorValue = humor;
+                                                            int insultValue = finalInsult;
+
+                                                            ImageView humor = (ImageView) dialog.findViewById(R.id.imageView8);
+                                                            ImageView insult = (ImageView) dialog.findViewById(R.id.imageView5);
+
+                                                            Drawable drawable = getDrawable(R.mipmap.heart_grey);
+                                                            Bitmap heartGrey = ((BitmapDrawable) drawable).getBitmap();
+                                                            Drawable drawable2 = getDrawable(R.mipmap.heart_purple);
+                                                            Bitmap heartPurple = ((BitmapDrawable) drawable2).getBitmap();
+
+                                                            Drawable drawable1 = getDrawable(R.mipmap.unheart_grey);
+                                                            Bitmap unheartGrey = ((BitmapDrawable) drawable1).getBitmap();
+                                                            Drawable drawable3 = getDrawable(R.mipmap.unheart_purple);
+                                                            Bitmap unheartPurple = ((BitmapDrawable) drawable3).getBitmap();
+
+                                                            if (humorValue == 0) {
+                                                                humor.setImageBitmap(heartGrey);
+                                                            }
+                                                            if (humorValue == 1) {
+                                                                humor.setImageBitmap(heartPurple);
+                                                            }
+                                                            if (insultValue == 0) {
+                                                                insult.setImageBitmap(unheartGrey);
+                                                            }
+                                                            if (insultValue == 1) {
+                                                                insult.setImageBitmap(unheartPurple);
+                                                            }
+
+                                                            dialog.setCancelable(true);
+                                                            dialog.show();
+
+
+                                                            Toast.makeText(c, "Posted Successfully!", Toast.LENGTH_LONG).show();
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                            Toast.makeText(c, "Sorry that didn't work (Firebase)", Toast.LENGTH_LONG).show();
+                                                        }
+                                                    });
                                                 }
-                                            });
+                                            }, new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError volleyError) {
+                                            progressDialog.dismiss();
+                                            Toast.makeText(c, "Sorry that didn't work (Humor)", Toast.LENGTH_LONG).show();
                                         }
-                                    }, new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError volleyError) {
-                                    progressDialog.dismiss();
-                                    Toast.makeText(c,"Sorry that didn't work (Humor)",Toast.LENGTH_LONG).show();
-                                }});
-                                humorScore.add(humorRequest);
+                                    });
+                                    humorScore.add(humorRequest);
+                                }
                             }
                         }, new Response.ErrorListener() {
                     @Override

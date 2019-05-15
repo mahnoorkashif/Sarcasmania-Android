@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.example.mahnoorkhan.sarcasmania.Fragment.NewfeedFragment;
 import com.example.mahnoorkhan.sarcasmania.Fragment.PostFragment;
 import com.example.mahnoorkhan.sarcasmania.Fragment.ProfileFragment;
+import com.example.mahnoorkhan.sarcasmania.Fragment.reportedtweets;
 
 
 /**
@@ -18,6 +19,7 @@ public class MainActivityPagerAdapter extends FragmentPagerAdapter {
     private Fragment home = new NewfeedFragment();
     private Fragment upload = new PostFragment();
     private Fragment profile = new ProfileFragment();
+    private Fragment reportedtweets = new reportedtweets();
 
     public MainActivityPagerAdapter(FragmentManager fm, int NumberOfTabs) {
         super(fm);
@@ -34,6 +36,8 @@ public class MainActivityPagerAdapter extends FragmentPagerAdapter {
                 return upload;
             case 2:
                 return profile;
+            case 3:
+                return reportedtweets;
             default:
                 return null;
         }

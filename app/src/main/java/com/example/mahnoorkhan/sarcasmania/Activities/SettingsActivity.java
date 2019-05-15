@@ -1,6 +1,7 @@
 package com.example.mahnoorkhan.sarcasmania.Activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.drawable.ColorDrawable;
@@ -51,8 +52,7 @@ public class SettingsActivity extends AppCompatActivity {
     TextView numberofposts;
     TextView average;
     FirebaseAuth firebaseAuth;
-    String currentPassword;
-    String currentEmail;
+    String currpassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +99,7 @@ public class SettingsActivity extends AppCompatActivity {
         numberofposts = (TextView) findViewById(R.id.postnumber);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
+
         databaseReference.child("Users").addValueEventListener(new ValueEventListener() {
             User user;
             @Override
@@ -123,9 +124,6 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
-
-        currentPassword = password.getText().toString();
-        currentEmail = email.getText().toString();
 
         databaseReference.child("Posts").addValueEventListener(new ValueEventListener() {
             Post post;
@@ -165,8 +163,59 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
+
+        currpassword = password.getText().toString();
     }
 
     public void onUpdateClick (View view) {
+        if(fullname.getText().toString().length() < 1) {
+            fullname.setError("Fullname cannot be Empty");
+            return;
+        }
+        if(password.getText().toString().length() < 1) {
+            password.setError("Password cannot be Empty");
+            return;
+        }
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), currpassword);
+        final Context c = this;
+
+        final ProgressDialog progressDialog = ProgressDialog.show(this, "Updating...", "Please wait...", true);
+        user.updatePassword(password.getText().toString())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            databaseReference.child("Users").child(userFromMain).child("password").setValue(password.getText().toString());
+                            databaseReference.child("Users").child(userFromMain).child("fullname").setValue(fullname.getText().toString());
+                            progressDialog.dismiss();
+                            finish();
+                        } else {
+                            Toast.makeText(c, "Something went wrong please try again!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+//        user.reauthenticate(credential)
+//                .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        if (task.isSuccessful()) {
+//                            user.updatePassword(password.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Void> task) {
+//                                    if (task.isSuccessful()) {
+
+//                                    } else {
+//                                        Toast.makeText(c,"Something went wrong please try again!",Toast.LENGTH_LONG).show();
+//                                    }
+//                                }
+//                            });
+//                        } else {
+//                            Toast.makeText(c,"User Authentication failed!",Toast.LENGTH_LONG).show();
+//                        }
+//                    }
+//                });
+
     }
 }

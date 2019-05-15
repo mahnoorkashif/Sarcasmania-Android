@@ -31,6 +31,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
 
 public class signup extends AppCompatActivity {
 
@@ -108,6 +113,7 @@ public class signup extends AppCompatActivity {
             confirmpassword.setError("Passwords not same");
             return;
         }
+
         databaseReference.child("Users").addValueEventListener(new ValueEventListener() {
             User user;
             boolean check = false;
@@ -145,6 +151,7 @@ public class signup extends AppCompatActivity {
                                     progressDialog.dismiss();
                                     Intent i = new Intent(getApplicationContext(),login.class);
                                     startActivity(i);
+                                    finish();
                                 } else {
                                     Log.d("Error: ",task.getException().getMessage());
                                     progressDialog.dismiss();
@@ -160,5 +167,12 @@ public class signup extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+//        finish();
+
     }
 }

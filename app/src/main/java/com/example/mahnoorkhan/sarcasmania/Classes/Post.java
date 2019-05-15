@@ -10,11 +10,6 @@ public class Post implements Serializable {
     private float sarcasm;
     private int humor;
     private int insult;
-
-//    private float updatedSarcasm;
-//    private float updatedHumor;
-//    private float updateInsult;
-
     private String time;
 
     public Post() {
@@ -28,9 +23,6 @@ public class Post implements Serializable {
         this.humor = humor;
         this.insult = insult;
         this.time = time;
-//        this.updatedSarcasm = 0;
-//        this.updatedHumor = 0;
-//        this.updateInsult = 0;
     }
 
     public String getUsername() { return username; }
@@ -76,28 +68,4 @@ public class Post implements Serializable {
     public String getTime() { return time; }
 
     public void setTime(String time) { this.time = time; }
-
-//    public float getUpdatedSarcasm() {
-//        return updatedSarcasm;
-//    }
-
-//    public void setUpdatedSarcasm(float updatedSarcasm) {
-//        this.updatedSarcasm = updatedSarcasm;
-//    }
-
-//    public float getUpdatedHumor() {
-//        return updatedHumor;
-//    }
-//
-//    public void setUpdatedHumor(float updatedHumor) {
-//        this.updatedHumor = updatedHumor;
-//    }
-//
-//    public float getUpdateInsult() {
-//        return updateInsult;
-//    }
-//
-//    public void setUpdateInsult(float updateInsult) {
-//        this.updateInsult = updateInsult;
-//    }
 }
