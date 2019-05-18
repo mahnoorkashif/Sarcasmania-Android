@@ -64,7 +64,11 @@ public class CardAdapter extends BaseCardAdapter {
         RatingBar sarcasmRating = (RatingBar) cardview.findViewById(R.id.ratingBar);
         ImageView humor = (ImageView) cardview.findViewById(R.id.imageView4);
         ImageView insult = (ImageView) cardview.findViewById(R.id.imageView3);
-        TextView timeStamp = (TextView) cardview.findViewById(R.id.time) ;
+        TextView timeStamp = (TextView) cardview.findViewById(R.id.time);
+
+        TextView t1 = (TextView) cardview.findViewById(R.id.textView3);
+        TextView t2 = (TextView) cardview.findViewById(R.id.textView2);
+
 
 
         Drawable drawable = context.getDrawable(R.mipmap.heart_grey);
@@ -80,17 +84,24 @@ public class CardAdapter extends BaseCardAdapter {
         int humorValue = post.getHumor();
         int insultValue = post.getInsult();
 
+        Glide.with(context).load(R.mipmap.insult).into(insult);
+        Glide.with(context).load(R.mipmap.haha).into(humor);
+
         if(humorValue == 0) {
-            humor.setImageBitmap(heartGrey);
+//            humor.setImageBitmap(heartGrey);
+            t1.setText("Humor: 0");
         }
         if(humorValue == 1) {
-            humor.setImageBitmap(heartPurple);
+//            humor.setImageBitmap(heartPurple);
+            t1.setText("Humor: 1");
         }
         if(insultValue == 0) {
-            insult.setImageBitmap(unheartGrey);
+//            insult.setImageBitmap(unheartGrey);
+            t2.setText("Insult: 0");
         }
         if(insultValue == 1) {
-            insult.setImageBitmap(unheartPurple);
+//            insult.setImageBitmap(unheartPurple);
+            t2.setText("Insult: 1");
         }
 
         tweetid.setText(Integer.toString(post.getTweetID()));

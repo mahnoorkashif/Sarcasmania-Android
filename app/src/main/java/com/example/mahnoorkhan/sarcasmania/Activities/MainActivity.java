@@ -370,40 +370,12 @@ public class MainActivity extends AppCompatActivity implements PostFragment.post
                             if (bitmap.sameAs(heartPurple)) {
                                 humorous.setImageBitmap(heartGrey);
                                 firebaseHelper.humorFeed(0, usernameFromLogin, modelList.get(0).getTweetID());
-                                RequestQueue queue = Volley.newRequestQueue(c);
-                                String url = "https://humor-feedback.herokuapp.com/api/sarcasmania?text=" + modelList.get(0).getTweet() + "&label=0";
-                                JsonObjectRequest stringRequest = new JsonObjectRequest(url, null,
-                                        new Response.Listener<JSONObject>() {
-                                            @Override
-                                            public void onResponse(JSONObject response) {
-                                                Toast.makeText(c, "Thank you for your feedback.", Toast.LENGTH_LONG).show();
-                                            }
-                                        }, new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        Toast.makeText(c, "Sorry! That didn't work, Please try again.", Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                                queue.add(stringRequest);
+                                Toast.makeText(c, "Thank you for your feedback.", Toast.LENGTH_LONG).show();
                             }
                             if (bitmap.sameAs(heartGrey)) {
                                 humorous.setImageBitmap(heartPurple);
                                 firebaseHelper.humorFeed(1, usernameFromLogin, modelList.get(0).getTweetID());
-                                RequestQueue queue = Volley.newRequestQueue(c);
-                                String url = "https://humor-feedback.herokuapp.com/api/sarcasmania?text=" + modelList.get(0).getTweet() + "&label=1";
-                                JsonObjectRequest stringRequest = new JsonObjectRequest(url, null,
-                                        new Response.Listener<JSONObject>() {
-                                            @Override
-                                            public void onResponse(JSONObject response) {
-                                                Toast.makeText(c, "Thank you for your feedback.", Toast.LENGTH_LONG).show();
-                                            }
-                                        }, new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        Toast.makeText(c, "Sorry! That didn't work, Please try again.", Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                                queue.add(stringRequest);
+                                Toast.makeText(c, "Thank you for your feedback.", Toast.LENGTH_LONG).show();
                             }
                         });
 
